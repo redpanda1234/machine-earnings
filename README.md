@@ -1,48 +1,57 @@
-Git repo for Math 189 midterm project. Goal: use machine learning to
-try and predict stock prices. General architecture: will create some
-form of network to analyze the stock data itself, and another to parse
-webscraped news articles from financial websites (and, possibly,
-academic journals).
+machine-earnings
+==============================
 
-# General game plan
-1. Web scrape financial data from some non-empty subset of these
-   websites:
-   i. morningstar
-   ii. Seeking alpha
-   iii. Yahoo finance
-   iv. Google stocks
+M A C H I N E  E A R N I N G S
 
-2. Sample price data from various-scale time windows, weighting more
-   heavily towards the short-term. E.g., 1000 points from today, 500
-   (moving averaged) from over the last week, 500 uniformly sampled
-   over the past 30 days.
+Project Organization
+------------
 
-   Each point in these vectors will be a vector structured similarly
-   to `(price per share, avg. time to completion, total shares sold)`,
-   or something. We'll figure out the details later. These will be fed
-   into some sort of machine learning algorithm. We might also include
-   some information from an ETF/ETP representative of the industry
-   this stock was from.
+    ├── LICENSE
+    ├── Makefile           <- Makefile with commands like `make data` or `make train`
+    ├── README.md          <- The top-level README for developers using this project.
+    ├── data
+    │   ├── external       <- Data from third party sources.
+    │   ├── interim        <- Intermediate data that has been transformed.
+    │   ├── processed      <- The final, canonical data sets for modeling.
+    │   └── raw            <- The original, immutable data dump.
+    │
+    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    │
+    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    │
+    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+    │                         the creator's initials, and a short `-` delimited description, e.g.
+    │                         `1.0-jqp-initial-data-exploration`.
+    │
+    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    │
+    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │   └── figures        <- Generated graphics and figures to be used in reporting
+    │
+    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+    │                         generated with `pip freeze > requirements.txt`
+    │
+    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
+    ├── src                <- Source code for use in this project.
+    │   ├── __init__.py    <- Makes src a Python module
+    │   │
+    │   ├── data           <- Scripts to download or generate data
+    │   │   └── make_dataset.py
+    │   │
+    │   ├── features       <- Scripts to turn raw data into features for modeling
+    │   │   └── build_features.py
+    │   │
+    │   ├── models         <- Scripts to train models and then use trained models to make
+    │   │   │                 predictions
+    │   │   ├── predict_model.py
+    │   │   └── train_model.py
+    │   │
+    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
+    │       └── visualize.py
+    │
+    └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
 
-   Furthermore, we might try and scrape financial news articles about
-   the industry / stock we're looking at, and apply some natural
-   language processing libraries to get word vectors of adjectives and
-   assign them numerical values of "favorable" or not. This will
-   result in a reaaaally lossy "opinion" number that we can append to
-   the data being fed into the model, etc.
 
-3. Given all this input information, the model will attempt to do one
-   of the following:
+--------
 
-   i. (prototype goal) predict whether the stock will be up or down in
-   10 minutes
-
-   ii. (more long-term project goal) find a basic trading strategy.
-   I.e., perform one of the following:
-       a. Choose to buy (long)
-       b. Choose to buy (short)
-       c. Choose to sell
-       d. Choose to do nothing
-   Cost function will be determined based on whether the model "made" or
-   lost money, and possibly the order of magnitude of the profit /
-   loss.
+<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
