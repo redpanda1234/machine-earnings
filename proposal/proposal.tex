@@ -1,7 +1,8 @@
-\documentclass{article}
+\documentclass[12pt]{article}
 
 \usepackage[margin=1in, tmargin=1.25in]{geometry}
 \usepackage{fancyhdr}
+\usepackage{lastpage}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -14,10 +15,34 @@
 
 \begin{document}
 \section{Summary}
-For our project, we would like to apply Machine Learning techniques to predict
-stock prices. We would like to try to scrape financial articles from new
-outlets online and perform analysis on the sentiments expressed in those
-articles to predict how stock prices would be affected in the near future. We
-could also consider specific industries such as oil or tech and seeing how they
-might influence each other.
+For our project, we would like to apply Machine Learning techniques to
+predict stock prices. We would like to try to scrape financial
+articles from new outlets online and perform analysis on the
+sentiments expressed in those articles to predict how stock prices
+would be affected in the near future. We could also consider specific
+industries such as oil or tech and seeing how they might influence
+each other.
+
+\section{Network architecture}
+We will give an input tensor of time-series data scraped from
+financial websites. These will then pass into an LSTM neural network
+(implemented in \texttt{tensorflow}), then pass through a small
+softmax layer, which will output one of three decisions: buy, sell, or
+do nothing.
+
+\section{Cost function}
+We will establish a simple cost function by looking at the network's
+total gains / losses, measured with respect to the starting balance
+some period of time earlier.
+
+\section{Datasets}
+We will be trying to scrape data from one of the following APIs:
+\begin{itemize}
+  \item \texttt{alphavantage}
+  \item \texttt{quandl}
+  \item \texttt{morningstar}
+\end{itemize}
+
+
+
 \end{document}
