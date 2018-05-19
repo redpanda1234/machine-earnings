@@ -24,12 +24,21 @@ def func(x, *args):
 
 def main(degree=4):
     """
+    main performs polynomial fits on windowed stock data (see
+    scraper.py) and plots the coefficients in R^3.
 
+    Arguments:
     """
 
     # Get windowed data for S&P 500 stocks, together with the
     # window_size
     data, window_size = scraper.slice_windows(scraper.fetch_data())
+
+    fig = plt.figure()
+
+    i = 1
+    tot = len(data)
+    side = np.ceil(np.sqrt(tot))
 
     for windows, symbol in data:
 
@@ -54,15 +63,17 @@ def main(degree=4):
             ys += [vec[2]]
             zs += [vec[3]]
 
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
+
+        ax = fig.add_subplot(side, side, i, projection="3d")
         ax.set_title("Polynomial coefficients for windowed fits of"
                      "{}".format(symbol))
 
         ax.plot(xs, ys, zs)
 
-        plt.show()
-        plt.clf()
+        i += 1
+
+    plt.show()
+
 
 if __name__ == '__main__':
     main()
