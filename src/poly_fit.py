@@ -148,6 +148,10 @@ def main(degree=5, cache_data=False, use_cached_data=False):
             plot_vec += [fig.add_subplot(size, size, i+1)]
             line_vec += [plot_vec[i].plot(t, vec)]
             plt.setp(line_vec[i], linewidth=.5)
+            if i == 1:
+                plot_vec[i].set_title(
+                    "Time series data of polynomial coefficients for "
+                    "windowed fits of {}".format(symbol))
 
         plt.show()
 
@@ -159,6 +163,27 @@ def main(degree=5, cache_data=False, use_cached_data=False):
             fft_vec += [np.fft.fft(vec)]
 
         freq = np.fft.fftfreq(t.shape[-1])
+
+        plot_vec = []
+        line_vec = []
+
+        for i, vec in enumerate(fft_vec):
+            plot_vec += [fig.add_subplot(size, size, i+1)]
+            line_vec += [plot_vec[i].plot(freq, np.abs(vec))]
+            plt.setp(line_vec[i], linewidth=.5)
+
+            if i == 1:
+                plot_vec[i].set_title(
+                    "Time series data of fourier transform of "
+                    "polynomial coefficients for {}".format(symbol))
+
+
+        plt.show()
+
+        fig = plt.figure()
+
+        plot_vec = []
+        line_vec = []
 
         # order = 6
         # fs = 30.0
@@ -179,19 +204,20 @@ def main(degree=5, cache_data=False, use_cached_data=False):
         # plt.xlabel('Frequency [Hz]')
         # plt.grid()
 
-        # N = len(ws)
-        # T = 1.0
-        # xf = np.linspace(0.0, 1.0/(2.0 * T), N//2)
+        N = len(sep_vec[0])
+        T = 1.0
+        xf = np.linspace(0.0, 1.0/(2.0 * T), N//2)
 
-        size = int(np.ceil(np.sqrt(len(sep_vec))))
-
-        plot_vec = []
-        line_vec = []
 
         for i, vec in enumerate(fft_vec):
             plot_vec += [fig.add_subplot(size, size, i+1)]
-            line_vec += [plot_vec[i].plot(freq, vec.real, freq, vec.imag)]
+            line_vec += [plot_vec[i].plot(xf, 2.0/N * np.abs(vec[0:N//2]))]
             plt.setp(line_vec[i], linewidth=.5)
+
+        plt.show()
+
+
+
 
         # W_line = W_plot.plot(freq, np.abs(W))
         # X_line = X_plot.plot(freq, np.abs(X))
@@ -208,7 +234,7 @@ def main(degree=5, cache_data=False, use_cached_data=False):
         # plt.setp(Y_line, linewidth=.5, color='g')
         # plt.setp(Z_line, linewidth=.5)
 
-        plt.show()
+
 
 
 
