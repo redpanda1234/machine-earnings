@@ -167,25 +167,34 @@ def main(degree=5, cache_data=False, use_cached_data=False, normalize=False):
         # plt.xlabel('Frequency [Hz]')
         # plt.grid()
 
-        # W_plot = fig.add_subplot(221)
-        # X_plot = fig.add_subplot(222)
-        # Y_plot = fig.add_subplot(223)
-        # Z_plot = fig.add_subplot(224)
+        N = len(ws)
+        T = 1.0
+        xf = np.linspace(0.0, 1.0/(2.0 * T), N//2)
 
-        # W_line = W_plot.plot(freq, W.real)
-        # X_line = X_plot.plot(freq, X.real, freq, X.imag)
-        # Y_line = Y_plot.plot(freq, Y.real)
-        # Z_line = Z_plot.plot(freq, Z.real, freq, Z.imag)
+        W_plot = fig.add_subplot(221)
+        X_plot = fig.add_subplot(222)
+        Y_plot = fig.add_subplot(223)
+        Z_plot = fig.add_subplot(224)
 
-        # # W_line = W_plot.plot(freq, W.real)
-        # # X_line = X_plot.plot(freq, X.real, freq, X.imag)
-        # # Y_line = Y_plot.plot(freq, Y.real)
-        # # Z_line = Z_plot.plot(freq, Z.real, freq, Z.imag)
+        W_line = W_plot.plot(freq, W.real, freq, W.imag)
+        X_line = X_plot.plot(freq, X.real, freq, X.imag)
+        Y_line = Y_plot.plot(freq, Y.real, freq, Y.imag)
+        Z_line = Z_plot.plot(freq, Z.real, freq, Z.imag)
 
-        # plt.setp(W_line, linewidth=.5, color='r')
-        # plt.setp(X_line, linewidth=.5, color='b')
-        # plt.setp(Y_line, linewidth=.5, color='g')
-        # plt.setp(Z_line, linewidth=.5)
+        # W_line = W_plot.plot(freq, np.abs(W))
+        # X_line = X_plot.plot(freq, np.abs(X))
+        # Y_line = Y_plot.plot(freq, np.abs(Y))
+        # Z_line = Z_plot.plot(freq, np.abs(Z))
+
+        # W_line = W_plot.plot(xf, 2.0/N * np.abs(ws[0:N//2]))
+        # X_line = X_plot.plot(xf, 2.0/N * np.abs(xs[0:N//2]))
+        # Y_line = Y_plot.plot(xf, 2.0/N * np.abs(ys[0:N//2]))
+        # Z_line = Z_plot.plot(xf, 2.0/N * np.abs(zs[0:N//2]))
+
+        plt.setp(W_line, linewidth=.5, color='r')
+        plt.setp(X_line, linewidth=.5, color='b')
+        plt.setp(Y_line, linewidth=.5, color='g')
+        plt.setp(Z_line, linewidth=.5)
 
         plt.show()
 
