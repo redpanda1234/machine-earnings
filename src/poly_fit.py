@@ -2,11 +2,25 @@
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+
+from scipy.signal import butter, lfilter, freqz
+
 import numpy as np
 import pickle
 import sys
 
 import scraper
+
+def butter_lowpass(cutoff, fs, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype="low", analog=False)
+    return b, a
+
+def butter_lowpass_filter(data, cutoff, fs, order=5):
+    b, a = butter_lowpass(cutoff, fs, order=order)
+    y = lfilter(b, a, data)
+    return y
 
 def func(x, *args):
     """
@@ -27,7 +41,7 @@ def func(x, *args):
 
     return result
 
-def main(degree=5, cache_data=False, use_cached_data=False):
+def main(degree=5, cache_data=False, use_cached_data=False, normalize=False):
     """
     main performs polynomial fits on windowed stock data (see
     scraper.py) and plots the coefficients in R^3.
@@ -62,11 +76,9 @@ def main(degree=5, cache_data=False, use_cached_data=False):
         scraper.slice_windows(scraper.fetch_data(), cache_data=cache_data)
         print
 
-    fig = plt.figure()
 
-    i = 1
-    tot = len(data)
-    side = np.ceil(np.sqrt(tot))
+
+    fourier_space_data = []
 
     for windows, symbol in data:
 
@@ -84,23 +96,100 @@ def main(degree=5, cache_data=False, use_cached_data=False):
             # plt.show()
             # plt.close()
 
-        xs, ys, zs = [], [], []
+        ws, xs, ys, zs = [], [], [], []
 
         for vec in z_list:
-            xs += [vec[0]]
-            ys += [vec[1]]
-            zs += [vec[2]]
+            ws += [vec[0]]
+            xs += [vec[1]]
+            ys += [vec[2]]
+            zs += [vec[3]]
+
+        t = np.array(list(range(len(xs))))
+
+        # fig = plt.figure()
+        # # ax = fig.add_subplot(side, side, i, projection="3d")
+        # ax = fig.add_subplot(111, projection="3d")
+        # ax.set_title("Polynomial coefficients for windowed fits of "
+        #              "{}".format(symbol))
+
+        # line = ax.plot(xs, ys, zs)
+        # plt.setp(line, linewidth=.5, color='r')
+
+        # ax.plot(xs, ys, zs, "k<")
+
+        # plt.show()
+
+        # fig = plt.figure()
 
 
-        ax = fig.add_subplot(side, side, i, projection="3d")
-        ax.set_title("Polynomial coefficients for windowed fits of"
-                     "{}".format(symbol))
+        # w_plot = fig.add_subplot(221)
+        # x_plot = fig.add_subplot(222)
+        # y_plot = fig.add_subplot(223)
+        # z_plot = fig.add_subplot(224)
 
-        ax.plot(xs, ys, zs)
+        # w_line = w_plot.plot(t, ws)
+        # x_line = x_plot.plot(t, xs)
+        # y_line = y_plot.plot(t, ys)
+        # z_line = z_plot.plot(t, zs)
 
-        i += 1
+        # plt.setp(w_line, linewidth=.5, color='r')
+        # plt.setp(x_line, linewidth=.5, color='b')
+        # plt.setp(y_line, linewidth=.5, color='g')
+        # plt.setp(z_line, linewidth=.5)
 
-    plt.show()
+        # plt.show()
+
+        fig = plt.figure()
+
+        W = np.fft.fft(ws)
+        X = np.fft.fft(xs)
+        Y = np.fft.fft(ys)
+        Z = np.fft.fft(zs)
+
+        freq = np.fft.fftfreq(t.shape[-1])
+
+        # order = 6
+        # fs = 30.0
+        # cutoff = 3.667
+
+        # print(freq)
+
+        # W_b, W_a = butter_lowpass(cutoff, fs, order)
+
+        # w, h = freqz(W_b, W_a, worN=8000)
+
+        # plt.subplot(2, 1, 1)
+        # plt.plot(0.5*fs*w/np.pi, np.abs(h), 'b')
+        # plt.plot(cutoff, 0.5*np.sqrt(2), 'ko')
+        # plt.axvline(cutoff, color='k')
+        # plt.xlim(0, 0.5*fs)
+        # plt.title("Lowpass Filter Frequency Response")
+        # plt.xlabel('Frequency [Hz]')
+        # plt.grid()
+
+        # W_plot = fig.add_subplot(221)
+        # X_plot = fig.add_subplot(222)
+        # Y_plot = fig.add_subplot(223)
+        # Z_plot = fig.add_subplot(224)
+
+        # W_line = W_plot.plot(freq, W.real)
+        # X_line = X_plot.plot(freq, X.real, freq, X.imag)
+        # Y_line = Y_plot.plot(freq, Y.real)
+        # Z_line = Z_plot.plot(freq, Z.real, freq, Z.imag)
+
+        # # W_line = W_plot.plot(freq, W.real)
+        # # X_line = X_plot.plot(freq, X.real, freq, X.imag)
+        # # Y_line = Y_plot.plot(freq, Y.real)
+        # # Z_line = Z_plot.plot(freq, Z.real, freq, Z.imag)
+
+        # plt.setp(W_line, linewidth=.5, color='r')
+        # plt.setp(X_line, linewidth=.5, color='b')
+        # plt.setp(Y_line, linewidth=.5, color='g')
+        # plt.setp(Z_line, linewidth=.5)
+
+        plt.show()
+
+
 
 
 if __name__ == "__main__":

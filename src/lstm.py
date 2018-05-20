@@ -1,38 +1,7 @@
-import time
-
 import numpy as np
+import os
+import time
 import tensorflow as tf
-
-import util
-
-from tensorflow.python.client import devide_lib
-
-import scraper
-
-logging = tf.logging
-
-
-class LSTMConfig:
-
-    def __init__()
-    input_size=1
-    num_steps=30
-    lstm_size=128
-    num_layers=1
-    keep_prob=0.8
-    batch_size=64
-    init_learining_rate=0.001
-    learning_rate_decay=0.99
-    init_epoch=5
-    max_epoch=50
-
-    # control the size of the embedding used to represent stock
-    # symbols
-    embedding_size=3
-
-    # the number of unique stocks we're learning from
-    stock_count=10
-
 
 class InputData:
     """
@@ -54,35 +23,74 @@ class InputData:
         # TODO: figure out how to modify scraper to be helpful here
         self.input_data, self.targets = None
 
+
 class LSTMModel():
     """
     The LSTM model we'll be applying to our stock data.
     """
 
-    def __init__(self, is_training, config, input_):
+    def __init__(self, sess, config=LSTMConfig):
         """
         initialize the LSTM model
         """
-        self._is_training = is_training
-        self._input = input_
+        self.sess=sess
 
-        # aaa
-        self._rnn_params = None
-        self._cell = None
+        self.input_size=1
+        self.num_steps=30
+        self.lstm_size=128
+        self.num_layers=1
 
-        self.batch_size = input_.batch_size
-        self.num_steps = input_.num_steps
-        size = config.hidden_size
+        self.keep_prob=0.8
+
+        self.batch_size=64
+        self.init_learning_rate=0.001
+        self.learning_rate_decay=0.99
+        self.init_epoch=5
+        self.max_epoch=50
+
+        # control the size of the embedding used to represent stock
+        # symbols
+        self.embedding_size=3
+
+        # the number of unique stocks we're learning from
+        self.stock_count=10
+
+
+        self.use_embed = (embed_size is not None) and (embed_size > 0)
+        self.embed_size = embed_size or -1
+
+        self.logs_dir="logs"
+        self.plots_dir="plot"
+
+    def _create_cell(self):
+        lstm_cell = tf.contrib.rnn.LSTMCell(self.lstm_size,
+                                            state_is_tuple=True)
+        lstm_cell = tf.contrib.rnn.DrooutWrapper(lstm_cell,
+                                                 output_keep_prob=self.keep_prob)
+        return lstm_cell
+
+    def _stacked_rnn(self):
+        if self.num_layers > 1:
+            cell = tf.contrib.rnn.MultRNNCell(
+                    [self._create_cell() for _ in
+                     range(self.num_layers)], state_is_tuple=True
+                )
+        else:
+            cell = self._create_cell()
+        return cell
+
+    def build_graphi(self):
+        self.learning_rate = tf.placeholder(tf.float32, None,
+        name="learning rate")
+        self.keep_prob = tf.placeholder(tf.float32, None,
+        name="keep_prob")
+
+        self.symbols = None
+
+        cell = self._stacked_rnn()
 
 
 
-def _create_cell():
-    if config.keep_prob < 1.0:
-        return tf.contrib.rnn.DropoutWrapper(
-            lstm_cell, output_keep_prob=config.keep_prob)
-    else:
-        return tf.contrib.rnn.LSTMCell(config.lstm_size,
-                                       state_is_tuple=True)
 
 
 def init_stacked_lstm():
@@ -93,36 +101,3 @@ def init_stacked_lstm():
         return stacked_lstm
     else:
         return _create_cell()
-
-
-
-def main():
-
-    # Initialize abstract graph representing the flow of computations
-    tf.reset_default_graph()
-    lstm_graph = tf.Graph()
-
-    inputs = tf.placeholder(tf.float32, [None, config.num_steps, config.input_size])
-    targets = tf.placeholder(tf.float32, [None, config.input_size])
-    learning_rate = tf.placeholder(tf.float32, None)
-
-    stocks = tf.placeholder(tf.float32, [batch_size, num_steps])
-
-    stacked_lstm = init_stacked_lstm(lstm_size, num_layers, batch_size)
-
-    initial_state = state = stacked_lstm.zero_state(batch_size, tf.float32)
-
-    for i in range(num_steps):
-        # value is updated after each processing
-        output, state = lstm(stocks[:, i], state)
-
-
-        # the rest of the code
-        # ...
-
-
-
-    final_state = state
-
-    # # embedding_matrix is a tensor of shape [vocabulary_size, embedding size]
-    # word_embeddings = tf.nn.embedding_lookup(embedding_matrix, word_ids)
