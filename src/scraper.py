@@ -1,10 +1,13 @@
+#!/usr/bin/env python3
+
+from alpha_vantage.timeseries import TimeSeries
 import numpy as np
 import pandas as pd
-import api_keys
-from alpha_vantage.timeseries import TimeSeries
-
+import pickle
 import progressbar
 import time
+
+import api_keys
 
 def fetch_data(interval="1min", num_stocks=5):
     """
@@ -78,7 +81,7 @@ def fetch_data(interval="1min", num_stocks=5):
     return data
 
 
-def slice_windows(data, window_size=30, shift_size=3):
+def slice_windows(data, window_size=30, shift_size=3, cache_data=False):
     """
     slice_windows converts time-series stock data into small windows.
 
@@ -91,11 +94,14 @@ def slice_windows(data, window_size=30, shift_size=3):
         formatted as a numpy array structured like [<open_price>,
         <high_price>, <low_price>, <close_price>, <volume>].
 
-        <window_size> -- (int) an integer describing how many points
-        of stock data we  want each window to contain.
+        <window_size> -- (int) describes how many points of stock data we want
+        each window to contain.
 
-        <shift_size> -- (int) an integer describing how much to shift with each
-        next window.
+        <shift_size> -- (int) describes how much to shift with each next
+        window.
+
+        <cache_data> -- (bool) describes whether the downloaded data should be
+        cached.
 
     Returns:
         <windowed_data> -- (array_like, int) a tuple containing
@@ -138,4 +144,13 @@ def slice_windows(data, window_size=30, shift_size=3):
 
     print("Slicing successful.")
     print("Elapsed time{: 4.4f}".format(time.time() - start_time))
-    return (windowed_data, window_size)
+
+    return_data = (windowed_data, window_size)
+
+    # Cache downloaded data to data directory
+    if cache_data:
+        cached_data_filename = "data/cached_stock_data.p"
+        pickle.dump(return_data, open(cached_data_filename, "wb"))
+        print("Cached downloaded stock data in " + cached_data_filename + ".")
+
+    return return_data

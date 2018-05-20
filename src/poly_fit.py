@@ -1,7 +1,12 @@
-import scraper
-import numpy as np
+#!/usr/bin/env python3
+
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import pickle
+import sys
+
+import scraper
 
 def func(x, *args):
     """
@@ -22,17 +27,40 @@ def func(x, *args):
 
     return result
 
-def main(degree=4):
+def main(degree=4, cache_data=False, use_cached_data=False):
     """
     main performs polynomial fits on windowed stock data (see
     scraper.py) and plots the coefficients in R^3.
 
     Arguments:
+        <degree> -- (int) describes the degree of the polynomial to be fitted
+        onto the data.
+
+        <cache_data> -- (bool) describes whether the data should be cached when
+        downloaded.
+
+        <use_cached_data> -- (bool) describes whether cached data should be
+        used.
     """
 
     # Get windowed data for S&P 500 stocks, together with the
     # window_size
-    data, window_size = scraper.slice_windows(scraper.fetch_data())
+    if use_cached_data:
+        cached_data_filename = "data/cached_stock_data.p"
+        try:
+            with open(cached_data_filename) as cached_data:
+                print("Using cached data found in " + cached_data_filename \
+                        + "...")
+                data, window_size = pickle.load(open(cached_data_filename, "rb"))
+        except FileNotFoundError:
+            print("Cached data not found in " + cached_data_filename + "...")
+            print("Downloading data instead...")
+            data, window_size = \
+            scraper.slice_windows(scraper.fetch_data(), cache_data=cache_data)
+    else:
+        data, window_size = \
+        scraper.slice_windows(scraper.fetch_data(), cache_data=cache_data)
+        print
 
     fig = plt.figure()
 
@@ -75,5 +103,7 @@ def main(degree=4):
     plt.show()
 
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    cache_data = "--cache-data" in sys.argv[1:]
+    use_cached_data = "--use-cached-data" in sys.argv[1:]
+    main(cache_data=cache_data, use_cached_data=use_cached_data)
