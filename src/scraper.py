@@ -91,7 +91,7 @@ def fetch_data(interval="1min", num_stocks=5):
     return data
 
 
-def slice_windows(data, window_size=30, shift_size=1, cache_data=False):
+def slice_windows(data, window_size=30, shift_size=25, cache_data=False):
     """
     slice_windows converts time-series stock data into small windows.
 
