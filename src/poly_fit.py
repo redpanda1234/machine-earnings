@@ -46,21 +46,21 @@ def main(degree=5, cache_data=False, use_cached_data=False):
     # Get windowed data for S&P 500 stocks, together with the
     # window_size
     if use_cached_data:
-        cached_data_filename = "data/cached_stock_data.p"
+        cached_data_filename = "data/cached_downloaded_data.p"
         try:
             with open(cached_data_filename) as cached_data:
                 print("Using cached data found in " + cached_data_filename \
                         + "...")
-                data, window_size = pickle.load(open(cached_data_filename, "rb"))
+                fetched_data = pickle.load(open(cached_data_filename, "rb"))
         except FileNotFoundError:
             print("Cached data not found in " + cached_data_filename + "...")
             print("Downloading data instead...")
-            data, window_size = \
-            scraper.slice_windows(scraper.fetch_data(), cache_data=cache_data)
+            fetched_data = scraper.fetch_data(cache_data=cache_data)
     else:
-        data, window_size = \
-        scraper.slice_windows(scraper.fetch_data(), cache_data=cache_data)
-        print
+        fetched_data = scraper.fetch_data(cache_data=cache_data)
+
+    # Slice data into windows
+    data, window_size = scraper.slice_windows(fetched_data)
 
     fig = plt.figure()
 
