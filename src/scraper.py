@@ -74,7 +74,7 @@ def fetch_data(interval="1min", num_stocks=5, cache_data=False):
     # that we can graph things easily later
     for sym in progressbar.progressbar(symbol_subset):
         data += [(ts.get_intraday(sym, interval=interval, outputsize =
-                                  "full")[0].values, sym)]
+                                  "full")[0], sym)]
 
     print("Data ingested successfully!")
     print("Total elapsed time {: 4.4f}".format(time.time() -
@@ -85,7 +85,6 @@ def fetch_data(interval="1min", num_stocks=5, cache_data=False):
         cached_data_filename = "data/cached_downloaded_data.p"
         pickle.dump(data, open(cached_data_filename, "wb"))
         print("Cached downloaded stock data in " + cached_data_filename + ".")
-
 
     return data
 
@@ -123,6 +122,9 @@ def slice_windows(data, window_size=30, shift_size=25):
     print("==> Began slicing data into windows...")
 
     start_time = time.time()
+
+    # Convert pandas dataframes to numpy arrays
+    data = [(x.values, y) for (x, y) in data]
 
     # initialize windowed_data
     windowed_data = []
