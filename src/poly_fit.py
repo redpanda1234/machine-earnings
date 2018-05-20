@@ -115,7 +115,6 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
             sep_vec = [z_list]
 
         transformed = np.fft.fftn(sep_vec)
-        print(transformed.shape)
         total_fft_data += [(transformed, symbol)]
 
         if not plot:
@@ -214,7 +213,6 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
     for matrix, symbol in total_fft_data:
         zeros = np.zeros((degree, max_x))
         zeros[:matrix.shape[0],:matrix.shape[1]] = matrix
-        print(zeros.shape)
         new_fft_data += [(zeros, symbol)]
 
     cov_list = [[[] for _ in range(len(total_fft_data))] for _ in\
@@ -224,13 +222,13 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
 
     for i in range(len(new_fft_data)):
         for j in range(len(new_fft_data)-i):
-            print(new_fft_data[i][0].shape, new_fft_data[j][0].shape)
             cov_list[i][j] = cov_list[j][i] = (
                 np.cov(new_fft_data[i][0], new_fft_data[j][0]),
                 "Covariance of {0} and {1}".format(
                     new_fft_data[i][1], new_fft_data[j][1])
             )
-    print(cov_list)
+    print("Done.")
+    return cov_list
 
 
 
