@@ -7,19 +7,10 @@ import pandas as pd
 import pickle
 import progressbar
 import time
-# import urllib2
 
 import api_keys
 
-# # For later, better scraping
-# BASE_URL = "https://www.google.com/finance/historical?" + \
-#            "output=csv&q={0}&startdate=Jan+1%2C+1980&enddate={1}"
-# symbol_url = BASE_URL.format(
-#     urllib2.quote('GOOG'), # Replace with any stock you are interested.
-#     urllib2.quote(datetime.now().strftime("%b+%d,+%Y"), '+')
-# )
-
-def fetch_data(interval="1min", num_stocks=5):
+def fetch_data(interval="1min", num_stocks=5, cache_data=False):
     """
     Fetch stock data from the alphavantage API.
 
@@ -88,10 +79,18 @@ def fetch_data(interval="1min", num_stocks=5):
     print("Data ingested successfully!")
     print("Total elapsed time {: 4.4f}".format(time.time() -
         start_time))
+
+    # Cache downloaded data to data directory
+    if cache_data:
+        cached_data_filename = "data/cached_downloaded_data.p"
+        pickle.dump(data, open(cached_data_filename, "wb"))
+        print("Cached downloaded stock data in " + cached_data_filename + ".")
+
+
     return data
 
 
-def slice_windows(data, window_size=30, shift_size=25, cache_data=False):
+def slice_windows(data, window_size=30, shift_size=25):
     """
     slice_windows converts time-series stock data into small windows.
 
@@ -155,12 +154,4 @@ def slice_windows(data, window_size=30, shift_size=25, cache_data=False):
     print("Slicing successful.")
     print("Elapsed time{: 4.4f}".format(time.time() - start_time))
 
-    return_data = (windowed_data, window_size)
-
-    # Cache downloaded data to data directory
-    if cache_data:
-        cached_data_filename = "data/cached_stock_data.p"
-        pickle.dump(return_data, open(cached_data_filename, "wb"))
-        print("Cached downloaded stock data in " + cached_data_filename + ".")
-
-    return return_data
+    return (windowed_data, window_size)
