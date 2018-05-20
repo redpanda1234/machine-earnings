@@ -8,7 +8,7 @@ import time
 
 def fetch_data(interval="1min", num_stocks=5):
     """
-    Fetch stock data from alphavantage api.
+    Fetch stock data from the alphavantage API.
 
     Arguments:
         <interval> -- a string detailing how detailed we want the
@@ -26,7 +26,7 @@ def fetch_data(interval="1min", num_stocks=5):
     print("==> Fetching data...")
     start_time = time.time()
 
-    # Get our api key for alphavantage
+    # Get our API key for alphavantage
     alphavantage_key = api_keys.alphavantage_key
 
     # Initialize the timeseries data object
@@ -55,9 +55,9 @@ def fetch_data(interval="1min", num_stocks=5):
     # Each call from the timeseries thing gets a tuple <datum> of two
     # values:
     # <datum>[0] contains a pandas dataframe
-    # <datum>[1] contains a dictionary of information about the data.
+    # <datum>[1] contains a dictionary of information about the data
 
-    # When we take the .values, we get an array of values <x> with the
+    # When we take the values, we get an array of values <x> with the
     # following structure:
 
     # x[0] : open
@@ -74,11 +74,11 @@ def fetch_data(interval="1min", num_stocks=5):
 
     print("Data ingested successfully!")
     print("Total elapsed time {: 4.4f}".format(time.time() -
-    start_time))
+        start_time))
     return data
 
 
-def slice_windows(data, window_size=7):
+def slice_windows(data, window_size=30, shift_size=3):
     """
     slice_windows converts time-series stock data into small windows.
 
@@ -93,6 +93,9 @@ def slice_windows(data, window_size=7):
 
         <window_size> -- (int) an integer describing how many points
         of stock data we  want each window to contain.
+
+        <shift_size> -- (int) an integer describing how much to shift with each
+        next window.
 
     Returns:
         <windowed_data> -- (array_like, int) a tuple containing
@@ -113,25 +116,25 @@ def slice_windows(data, window_size=7):
 
         data_array = data_tup[0]
 
+        # Each item in data_array represent the following:
+        # x[0] : open
+        # x[1] : high
+        # x[2] : low
+        # x[3] : close
+        # x[4] : volume
+
         # Get average price over each interval
-        avg_arr = np.array([(x[1] + x[2])/2 for x in data_array])
+        avg_arr = [(x[1] + x[2])/2 for x in data_array]
 
-        # Find out how many extraneous data points we have n
-        end_ind = avg_arr.shape[0] % window_size
-
-        # Remove extra data so that the windows can be equally-sized
-        avg_arr = avg_arr[:-end_ind]
-
-        if avg_arr.shape[0] <= window_size:
-            print("\n data from {0} was too small ({1}); threw it"
-                  "out".format(data_tup[1], avg_arr.shape))
-            continue
+        # Figure out how many windows there are
+        end_idx = len(avg_arr) - window_size
 
         # Get the windows
-        windows = np.array(np.split(avg_arr, avg_arr.shape[0] /
-                                    window_size))
+        windows = []
+        for idx in range(0, end_idx, shift_size):
+            windows.append(avg_arr[idx:idx + window_size])
 
-        windowed_data.append((windows, data_tup[1]))
+        windowed_data.append((np.array(windows), data_tup[1]))
 
     print("Slicing successful.")
     print("Elapsed time{: 4.4f}".format(time.time() - start_time))
