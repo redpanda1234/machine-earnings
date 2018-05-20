@@ -48,14 +48,14 @@ def main(degree=5, cache_data=False, use_cached_data=False):
     scraper.py) and plots the coefficients in R^3.
 
     Arguments:
-        <degree> -- (int) describes the degree of the polynomial to be fitted
-        onto the data.
+        <degree> -- (int) describes the degree of the polynomial to be
+        fitted onto the data.
 
-        <cache_data> -- (bool) describes whether the data should be cached when
-        downloaded.
+        <cache_data> -- (bool) describes whether the data should be
+        cached when downloaded.
 
-        <use_cached_data> -- (bool) describes whether cached data should be
-        used.
+        <use_cached_data> -- (bool) describes whether cached data
+        should be used.
     """
 
     # Get windowed data for S&P 500 stocks, together with the
@@ -78,6 +78,8 @@ def main(degree=5, cache_data=False, use_cached_data=False):
     data, window_size = scraper.slice_windows(fetched_data)
 
     fig = plt.figure()
+
+    total_fft_data = []
 
     for windows, symbol in data:
 
@@ -107,6 +109,11 @@ def main(degree=5, cache_data=False, use_cached_data=False):
                     sep_vec[i] += [vec[i]]
         else:
             sep_vec = [z_list]
+
+        total_fft_data += [(np.fft.fftn(sep_vec), symbol)]
+
+        if not plot:
+            continue
 
         t = np.array(list(range(len(sep_vec[0]))))
 
@@ -161,20 +168,18 @@ def main(degree=5, cache_data=False, use_cached_data=False):
             fft_vec += [np.fft.fft(vec)]
 
         freq = np.fft.fftfreq(t.shape[-1])
-
         plot_vec = []
         line_vec = []
 
         for i, vec in enumerate(fft_vec):
             plot_vec += [fig.add_subplot(size, size, i+1)]
-            line_vec += [plot_vec[i].plot(freq, np.abs(vec))]
+            line_vec += [plot_vec[i].plot(freq, np.abs(vec)/len(sep_vec[0]))]
             plt.setp(line_vec[i], linewidth=.5)
 
-            if i == 1:
-                plot_vec[i].set_title(
-                    "Time series data of fourier transform of "
-                    "polynomial coefficients for {}".format(symbol))
 
+        plot_vec[1].set_title(
+            "Time series data of fourier transform of polynomial "
+            "coefficients for {}".format(symbol))
 
         plt.show()
 
@@ -194,6 +199,8 @@ def main(degree=5, cache_data=False, use_cached_data=False):
             plt.setp(line_vec[i], linewidth=.5)
 
         plt.show()
+
+
 
 
 if __name__ == "__main__":

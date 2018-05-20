@@ -10,7 +10,7 @@ import time
 
 import api_keys
 
-def fetch_data(interval="1min", num_stocks=5, cache_data=False):
+def fetch_data(interval="1min", num_stocks=25, cache_data=False):
     """
     Fetch stock data from the alphavantage API.
 
@@ -90,7 +90,7 @@ def fetch_data(interval="1min", num_stocks=5, cache_data=False):
     return data
 
 
-def slice_windows(data, window_size=30, shift_size=25):
+def slice_windows(data, window_size=20, shift_size=1):
     """
     slice_windows converts time-series stock data into small windows.
 
