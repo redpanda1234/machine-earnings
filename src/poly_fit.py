@@ -11,6 +11,8 @@ import sys
 
 import scraper
 
+import progressbar
+
 def butter_lowpass(cutoff, fs, order=5):
     nyq = 0.5 * fs
     normal_cutoff = cutoff / nyq
@@ -42,20 +44,20 @@ def func(x, *args):
 
     return result
 
-def main(degree=5, cache_data=False, use_cached_data=False):
+def main(degree=5, cache_data=False, use_cached_data=False, plot=True):
     """
     main performs polynomial fits on windowed stock data (see
     scraper.py) and plots the coefficients in R^3.
 
     Arguments:
-        <degree> -- (int) describes the degree of the polynomial to be fitted
-        onto the data.
+        <degree> -- (int) describes the degree of the polynomial to be
+        fitted onto the data.
 
-        <cache_data> -- (bool) describes whether the data should be cached when
-        downloaded.
+        <cache_data> -- (bool) describes whether the data should be
+        cached when downloaded.
 
-        <use_cached_data> -- (bool) describes whether cached data should be
-        used.
+        <use_cached_data> -- (bool) describes whether cached data
+        should be used.
     """
 
     # Get windowed data for S&P 500 stocks, together with the
@@ -79,9 +81,11 @@ def main(degree=5, cache_data=False, use_cached_data=False):
 
     fig = plt.figure()
 
-    fourier_space_data = []
+    total_fft_data = []
 
-    for windows, symbol in data:
+    print("==> Applying n-dimensional fast fourier transform...")
+
+    for windows, symbol in progressbar.progressbar(data):
 
         # Initialize empty list for polynomial coefficients
         z_list = []
@@ -109,6 +113,12 @@ def main(degree=5, cache_data=False, use_cached_data=False):
                     sep_vec[i] += [vec[i]]
         else:
             sep_vec = [z_list]
+
+        transformed = np.fft.fftn(sep_vec)
+        total_fft_data += [(transformed, symbol)]
+
+        if not plot:
+            continue
 
         t = np.array(list(range(len(sep_vec[0]))))
 
@@ -163,20 +173,18 @@ def main(degree=5, cache_data=False, use_cached_data=False):
             fft_vec += [np.fft.fft(vec)]
 
         freq = np.fft.fftfreq(t.shape[-1])
-
         plot_vec = []
         line_vec = []
 
         for i, vec in enumerate(fft_vec):
             plot_vec += [fig.add_subplot(size, size, i+1)]
-            line_vec += [plot_vec[i].plot(freq, np.abs(vec))]
+            line_vec += [plot_vec[i].plot(freq, np.abs(vec)/len(sep_vec[0]))]
             plt.setp(line_vec[i], linewidth=.5)
 
-            if i == 1:
-                plot_vec[i].set_title(
-                    "Time series data of fourier transform of "
-                    "polynomial coefficients for {}".format(symbol))
 
+        plot_vec[1].set_title(
+            "Time series data of fourier transform of polynomial "
+            "coefficients for {}".format(symbol))
 
         plt.show()
 
@@ -184,25 +192,6 @@ def main(degree=5, cache_data=False, use_cached_data=False):
 
         plot_vec = []
         line_vec = []
-
-        # order = 6
-        # fs = 30.0
-        # cutoff = 3.667
-
-        # print(freq)
-
-        # W_b, W_a = butter_lowpass(cutoff, fs, order)
-
-        # w, h = freqz(W_b, W_a, worN=8000)
-
-        # plt.subplot(2, 1, 1)
-        # plt.plot(0.5*fs*w/np.pi, np.abs(h), 'b')
-        # plt.plot(cutoff, 0.5*np.sqrt(2), 'ko')
-        # plt.axvline(cutoff, color='k')
-        # plt.xlim(0, 0.5*fs)
-        # plt.title("Lowpass Filter Frequency Response")
-        # plt.xlabel('Frequency [Hz]')
-        # plt.grid()
 
         N = len(sep_vec[0])
         T = 1.0
@@ -216,27 +205,39 @@ def main(degree=5, cache_data=False, use_cached_data=False):
 
         plt.show()
 
+    shapes = [x[0].shape[1] for x in total_fft_data]
+    max_x = max(shapes)
 
+    new_fft_data = []
 
+    for matrix, symbol in total_fft_data:
+        zeros = np.zeros((degree, max_x))
+        zeros[:matrix.shape[0],:matrix.shape[1]] = matrix
+        new_fft_data += [(zeros, symbol)]
 
-        # W_line = W_plot.plot(freq, np.abs(W))
-        # X_line = X_plot.plot(freq, np.abs(X))
-        # Y_line = Y_plot.plot(freq, np.abs(Y))
-        # Z_line = Z_plot.plot(freq, np.abs(Z))
+    cov_list = [[[] for _ in range(len(total_fft_data))] for _ in\
+    range(len(total_fft_data))]
 
-        # W_line = W_plot.plot(xf, 2.0/N * np.abs(ws[0:N//2]))
-        # X_line = X_plot.plot(xf, 2.0/N * np.abs(xs[0:N//2]))
-        # Y_line = Y_plot.plot(xf, 2.0/N * np.abs(ys[0:N//2]))
-        # Z_line = Z_plot.plot(xf, 2.0/N * np.abs(zs[0:N//2]))
+    print("==> Calculating covariance data...")
 
-        # plt.setp(W_line, linewidth=.5, color='r')
-        # plt.setp(X_line, linewidth=.5, color='b')
-        # plt.setp(Y_line, linewidth=.5, color='g')
-        # plt.setp(Z_line, linewidth=.5)
+    for i in range(len(new_fft_data)):
+        for j in range(len(new_fft_data)-i):
+            cov_list[i][j] = cov_list[j][i] = (
+                np.cov(new_fft_data[i][0], new_fft_data[j][0]),
+                "Covariance of {0} and {1}".format(
+                    new_fft_data[i][1], new_fft_data[j][1])
+            )
+            print(cov_list[i][j])
+    print("Done.")
 
+    cov_list = np.array(cov_list)
+    det_list = np.zeros(cov_list.shape)
+    for i in range(cov_list.shape[0]):
+        for j in range(cov_list.shape[0] - i):
+            det_list[i][j] = det_list[j][i] = np.linalg.det(cov_list[i][j][0])
 
-
-
+    print(det_list)
+    return cov_list
 
 
 
