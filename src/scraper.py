@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
 
 from alpha_vantage.timeseries import TimeSeries
+from datetime import datetime
 import numpy as np
 import pandas as pd
 import pickle
 import progressbar
 import time
+import urllib2
 
 import api_keys
+
+# For later, better scraping
+BASE_URL = "https://www.google.com/finance/historical?" + \
+           "output=csv&q={0}&startdate=Jan+1%2C+1980&enddate={1}"
+symbol_url = BASE_URL.format(
+    urllib2.quote('GOOG'), # Replace with any stock you are interested.
+    urllib2.quote(datetime.now().strftime("%b+%d,+%Y"), '+')
+)
 
 def fetch_data(interval="1min", num_stocks=5):
     """
