@@ -227,7 +227,16 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
                 "Covariance of {0} and {1}".format(
                     new_fft_data[i][1], new_fft_data[j][1])
             )
+            print(cov_list[i][j])
     print("Done.")
+
+    cov_list = np.array(cov_list)
+    det_list = np.zeros(cov_list.shape)
+    for i in range(cov_list.shape[0]):
+        for j in range(cov_list.shape[0] - i):
+            det_list[i][j] = det_list[j][i] = np.linalg.det(cov_list[i][j][0])
+
+    print(det_list)
     return cov_list
 
 

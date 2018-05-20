@@ -10,7 +10,7 @@ import time
 
 import api_keys
 
-def fetch_data(interval="1min", num_stocks=5, cache_data=False):
+def fetch_data(interval="1min", num_stocks=10, cache_data=False):
     """
     Fetch stock data from the alphavantage API.
 
