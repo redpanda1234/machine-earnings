@@ -44,7 +44,7 @@ def func(x, *args):
 
     return result
 
-def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
+def main(degree=5, cache_data=False, use_cached_data=False, plot=True):
     """
     main performs polynomial fits on windowed stock data (see
     scraper.py) and plots the coefficients in R^3.

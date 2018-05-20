@@ -90,7 +90,7 @@ def fetch_data(interval="1min", num_stocks=10, cache_data=False):
     return data
 
 
-def slice_windows(data, window_size=20, shift_size=1):
+def slice_windows(data, window_size=20, shift_size=1, normalize=True):
     """
     slice_windows converts time-series stock data into small windows.
 
@@ -140,6 +140,10 @@ def slice_windows(data, window_size=20, shift_size=1):
 
         # Get average price over each interval
         avg_arr = [(x[1] + x[2])/2 for x in data_array]
+
+        if normalize:
+            tot_avg = avg_arr.sum() / (len(avg_arr))
+            avg_arr /= tot_avg
 
         # Figure out how many windows there are
         end_idx = len(avg_arr) - window_size
