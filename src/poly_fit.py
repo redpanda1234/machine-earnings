@@ -35,13 +35,14 @@ def func(x, *args):
         as coefficients in
     """
     result = 0.0
-    args = list(*args)
+    print(args)
+    args = list(args)
     for i in range(len(args)):
         result += (args[i] * (x**i))
 
     return result
 
-def main(degree=5, cache_data=False, use_cached_data=False, normalize=False):
+def main(degree=5, cache_data=False, use_cached_data=False):
     """
     main performs polynomial fits on windowed stock data (see
     scraper.py) and plots the coefficients in R^3.
@@ -74,9 +75,6 @@ def main(degree=5, cache_data=False, use_cached_data=False, normalize=False):
     else:
         data, window_size = \
         scraper.slice_windows(scraper.fetch_data(), cache_data=cache_data)
-        print
-
-
 
     fourier_space_data = []
 
@@ -87,64 +85,75 @@ def main(degree=5, cache_data=False, use_cached_data=False, normalize=False):
 
         for window in windows:
             x = np.array(list(range(window_size)))
-            z_list.append(np.polyfit(x, window, degree))
+            z = np.polyfit(x, window, degree)
+            z_list.append(z)
 
             # Uncomment these to see what our fits are looking like
             # plt.plot(x, window, "ro")
-            # smooth_x = np.linspace(0, scraper.windows_size, 200)
-            # plt.plot(smooth_x, func(smooth_x, *z))
+            # smooth_x = np.linspace(0, window_size, 200)
+            # p = np.poly1d(z)
+            # plt.plot(smooth_x, p(smooth_x))
             # plt.show()
             # plt.close()
 
-        ws, xs, ys, zs = [], [], [], []
+        sep_vec = []
 
-        for vec in z_list:
-            ws += [vec[0]]
-            xs += [vec[1]]
-            ys += [vec[2]]
-            zs += [vec[3]]
+        if degree > 1:
+            for i in range(degree):
+                sep_vec += [[]]
+            for vec in z_list:
+                for i in range(degree):
+                    sep_vec[i] += [vec[i]]
+        else:
+            sep_vec = [z_list]
 
-        t = np.array(list(range(len(xs))))
-
-        # fig = plt.figure()
-        # # ax = fig.add_subplot(side, side, i, projection="3d")
-        # ax = fig.add_subplot(111, projection="3d")
-        # ax.set_title("Polynomial coefficients for windowed fits of "
-        #              "{}".format(symbol))
-
-        # line = ax.plot(xs, ys, zs)
-        # plt.setp(line, linewidth=.5, color='r')
-
-        # ax.plot(xs, ys, zs, "k<")
-
-        # plt.show()
-
-        # fig = plt.figure()
-
-
-        # w_plot = fig.add_subplot(221)
-        # x_plot = fig.add_subplot(222)
-        # y_plot = fig.add_subplot(223)
-        # z_plot = fig.add_subplot(224)
-
-        # w_line = w_plot.plot(t, ws)
-        # x_line = x_plot.plot(t, xs)
-        # y_line = y_plot.plot(t, ys)
-        # z_line = z_plot.plot(t, zs)
-
-        # plt.setp(w_line, linewidth=.5, color='r')
-        # plt.setp(x_line, linewidth=.5, color='b')
-        # plt.setp(y_line, linewidth=.5, color='g')
-        # plt.setp(z_line, linewidth=.5)
-
-        # plt.show()
+        t = np.array(list(range(len(sep_vec[0]))))
 
         fig = plt.figure()
 
-        W = np.fft.fft(ws)
-        X = np.fft.fft(xs)
-        Y = np.fft.fft(ys)
-        Z = np.fft.fft(zs)
+        if degree >= 3:
+            ax = fig.add_subplot(111, projection="3d")
+            line = ax.plot(sep_vec[0], sep_vec[1], sep_vec[2])
+            ax.plot(sep_vec[0], sep_vec[1], sep_vec[2], "k<")
+
+        elif degree == 2:
+            ax = fig.add_subplot(111)
+            line = ax.plot(sep_vec[0], sep_vec[1])
+            ax.plot(sep_vec[0], sep_vec[1], "k<")
+
+        else:
+            ax = fig.add_subplot(111)
+            line = ax.plot(t, sep_vec[0])
+            ax.plot(t, sep_vec[0], "k<")
+
+
+        plt.setp(line, linewidth=.5, color='r')
+
+        ax.set_title("Polynomial coefficients for windowed fits of "
+                     "{}".format(symbol))
+        plt.show()
+
+        fig = plt.figure()
+
+
+        size = int(np.ceil(np.sqrt(len(sep_vec))))
+
+        plot_vec = []
+        line_vec = []
+
+        for i, vec in enumerate(sep_vec):
+            plot_vec += [fig.add_subplot(size, size, i+1)]
+            line_vec += [plot_vec[i].plot(t, vec)]
+            plt.setp(line_vec[i], linewidth=.5)
+
+        plt.show()
+
+        fig = plt.figure()
+
+        fft_vec = []
+
+        for vec in sep_vec:
+            fft_vec += [np.fft.fft(vec)]
 
         freq = np.fft.fftfreq(t.shape[-1])
 
@@ -167,19 +176,19 @@ def main(degree=5, cache_data=False, use_cached_data=False, normalize=False):
         # plt.xlabel('Frequency [Hz]')
         # plt.grid()
 
-        N = len(ws)
-        T = 1.0
-        xf = np.linspace(0.0, 1.0/(2.0 * T), N//2)
+        # N = len(ws)
+        # T = 1.0
+        # xf = np.linspace(0.0, 1.0/(2.0 * T), N//2)
 
-        W_plot = fig.add_subplot(221)
-        X_plot = fig.add_subplot(222)
-        Y_plot = fig.add_subplot(223)
-        Z_plot = fig.add_subplot(224)
+        size = int(np.ceil(np.sqrt(len(sep_vec))))
 
-        W_line = W_plot.plot(freq, W.real, freq, W.imag)
-        X_line = X_plot.plot(freq, X.real, freq, X.imag)
-        Y_line = Y_plot.plot(freq, Y.real, freq, Y.imag)
-        Z_line = Z_plot.plot(freq, Z.real, freq, Z.imag)
+        plot_vec = []
+        line_vec = []
+
+        for i, vec in enumerate(fft_vec):
+            plot_vec += [fig.add_subplot(size, size, i+1)]
+            line_vec += [plot_vec[i].plot(freq, vec.real, freq, vec.imag)]
+            plt.setp(line_vec[i], linewidth=.5)
 
         # W_line = W_plot.plot(freq, np.abs(W))
         # X_line = X_plot.plot(freq, np.abs(X))
@@ -191,12 +200,13 @@ def main(degree=5, cache_data=False, use_cached_data=False, normalize=False):
         # Y_line = Y_plot.plot(xf, 2.0/N * np.abs(ys[0:N//2]))
         # Z_line = Z_plot.plot(xf, 2.0/N * np.abs(zs[0:N//2]))
 
-        plt.setp(W_line, linewidth=.5, color='r')
-        plt.setp(X_line, linewidth=.5, color='b')
-        plt.setp(Y_line, linewidth=.5, color='g')
-        plt.setp(Z_line, linewidth=.5)
+        # plt.setp(W_line, linewidth=.5, color='r')
+        # plt.setp(X_line, linewidth=.5, color='b')
+        # plt.setp(Y_line, linewidth=.5, color='g')
+        # plt.setp(Z_line, linewidth=.5)
 
         plt.show()
+
 
 
 
