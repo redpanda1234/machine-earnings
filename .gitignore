@@ -83,3 +83,6 @@ target/
 
 # API keys
 api_keys.py
+
+# Python files used by pickle module to store variable values
+*.p
