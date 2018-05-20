@@ -76,8 +76,6 @@ def main(degree=5, cache_data=False, use_cached_data=False):
         data, window_size = \
         scraper.slice_windows(scraper.fetch_data(), cache_data=cache_data)
 
-    fourier_space_data = []
-
     for windows, symbol in data:
 
         # Initialize empty list for polynomial coefficients
@@ -182,25 +180,6 @@ def main(degree=5, cache_data=False, use_cached_data=False):
         plot_vec = []
         line_vec = []
 
-        # order = 6
-        # fs = 30.0
-        # cutoff = 3.667
-
-        # print(freq)
-
-        # W_b, W_a = butter_lowpass(cutoff, fs, order)
-
-        # w, h = freqz(W_b, W_a, worN=8000)
-
-        # plt.subplot(2, 1, 1)
-        # plt.plot(0.5*fs*w/np.pi, np.abs(h), 'b')
-        # plt.plot(cutoff, 0.5*np.sqrt(2), 'ko')
-        # plt.axvline(cutoff, color='k')
-        # plt.xlim(0, 0.5*fs)
-        # plt.title("Lowpass Filter Frequency Response")
-        # plt.xlabel('Frequency [Hz]')
-        # plt.grid()
-
         N = len(sep_vec[0])
         T = 1.0
         xf = np.linspace(0.0, 1.0/(2.0 * T), N//2)
@@ -212,29 +191,6 @@ def main(degree=5, cache_data=False, use_cached_data=False):
             plt.setp(line_vec[i], linewidth=.5)
 
         plt.show()
-
-
-
-
-        # W_line = W_plot.plot(freq, np.abs(W))
-        # X_line = X_plot.plot(freq, np.abs(X))
-        # Y_line = Y_plot.plot(freq, np.abs(Y))
-        # Z_line = Z_plot.plot(freq, np.abs(Z))
-
-        # W_line = W_plot.plot(xf, 2.0/N * np.abs(ws[0:N//2]))
-        # X_line = X_plot.plot(xf, 2.0/N * np.abs(xs[0:N//2]))
-        # Y_line = Y_plot.plot(xf, 2.0/N * np.abs(ys[0:N//2]))
-        # Z_line = Z_plot.plot(xf, 2.0/N * np.abs(zs[0:N//2]))
-
-        # plt.setp(W_line, linewidth=.5, color='r')
-        # plt.setp(X_line, linewidth=.5, color='b')
-        # plt.setp(Y_line, linewidth=.5, color='g')
-        # plt.setp(Z_line, linewidth=.5)
-
-
-
-
-
 
 
 if __name__ == "__main__":
