@@ -23,6 +23,9 @@
 
 % \usepackage{lmodern}
 
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{float}
 \usetikzlibrary{shapes, arrows}
@@ -217,6 +220,25 @@ Implementations and hyperparameters may differ, of course, but underneath, the
 structure of the model is largely the same. Hence, we decided to focus our work
 on augmenting the filtering stage shown above. We wanted the network to have
 access to both processed and unprocessed information,
+
+\subsection{Polynomial Fitting on Windowed Data}
+\begin{figure}
+  \centering
+  \begin{subfigure}{.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/sliding1}
+  \end{subfigure}%
+  \begin{subfigure}{.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/sliding2}
+  \end{subfigure}
+  \begin{subfigure}{.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/sliding3}
+  \end{subfigure}
+  \caption{Sliding windows of data fitted with polynomials}
+  \label{fig:sliding}
+\end{figure}
 
 \subsection{Frequency Analysis}
 
