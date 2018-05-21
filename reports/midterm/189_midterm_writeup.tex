@@ -81,7 +81,7 @@ has a rough idea of where we'll be going:
   \item Conclusion
 \end{enumerate}
 
-\section{Motivation}
+\section{Background}
 There are many reasons why predicting stock prices is difficult, but
 for our model today, we will focus on just two:
 \begin{enumerate}
@@ -106,34 +106,15 @@ for our model today, we will focus on just two:
     predicting human psychology.
 \end{enumerate}
 
-For today, we will
+Using modern machine learning techniques, it is possible to control
+for some effects of (2) by using previous stock data. However,
+less work has been done to model the effects of (1). So, for today's
+model, we will focus on methods of preprocessing time series stock
+data so as to control for some of the effects of (1).
 
-% Stock prices can be influenced by many factors such as other stock
-% prices, anticipation of capital gains or losses, global politics,
-% earnings reports, and etc. These factors may each have a different
-% weighting on the stock depending on time and which stock is being
-% analyzed in question. For example, earnings reports might have
-% significantly more impact on stock prices immediately after release as
-% opposed to two months after the report comes out. Another example
-% would be that global politics might influence the stock price of
-% \textbf{LMT} (Lockheed Martin), an aerospace and defense company, more
-% than the stock price of \textbf{BKC} (Burger King), a fast food
-% restaurant chain.
+\section{The Model}
 
-% Ultimately, humans are the ones who choose to buy, sell, or short
-% these stocks based on some analysis, usually not completely
-% comprehensive, of the factors they observe. Since humans are often
-% unaware or unable to analyze all these competing factors at once,
-% their decisions are often unpredictable or at least very difficult to
-% predict. As such, predicting the price of stocks by modeling these
-% interactions between stock price factors and humans is difficult and
-% unwise. Therefore, we have decided to perform stock analysis by only
-% analyzing past stock trends. This approach, although loses out on a
-% lot of information, is computationally less demanding and easier to
-% find data for performing analysis.
-
-\section{Goals}
-
+\subsection{Goals}
 Our ultimate goal is to be able to use past stock data to train our
 model. Then given some stock trend data for some stock, use our model
 to predict the upcoming trends and return a vector of decisions. An
@@ -151,7 +132,7 @@ $P_{short}(\mathbf{x})$ represents shorting the stock, and
 $P_{nothing}(\mathbf{x})$ represents doing nothing. All these
 probabilities should sum to 1.
 
-\section{Model Overview}
+\subsection{Prototype Architecture}
 Our large-scale goal for the model is as follows:
 \begin{figure}[H]
   \centering
@@ -220,8 +201,7 @@ Our large-scale goal for the model is as follows:
       \node[code] (webscraper) at (0,6) {Webscraper};
       \node[data] (time series) at (-4,3) {Stock data};
       \node[data] (text) at (4,3) {Text data};
-      \node[code] (processer) at (4,0) {Sentiment Analysis (NLP /
-        LSTM)};
+      \node[code] (processer) at (4,0) {Sentiment Analysis + NLP};
       \node[filter] (filter) at (-2,0) {Filter};
       \node[network] (lstm1) at (-2,-2) {LSTM (1)};
       \node[network] (lstm2) at (-6,-2) {LSTM (2)};
@@ -245,6 +225,33 @@ Our large-scale goal for the model is as follows:
   \caption{Model overview}
   \label{fig:goal}
 \end{figure}
+
+
+% Stock prices can be influenced by many factors such as other stock
+% prices, anticipation of capital gains or losses, global politics,
+% earnings reports, and etc. These factors may each have a different
+% weighting on the stock depending on time and which stock is being
+% analyzed in question. For example, earnings reports might have
+% significantly more impact on stock prices immediately after release as
+% opposed to two months after the report comes out. Another example
+% would be that global politics might influence the stock price of
+% \textbf{LMT} (Lockheed Martin), an aerospace and defense company, more
+% than the stock price of \textbf{BKC} (Burger King), a fast food
+% restaurant chain.
+
+% Ultimately, humans are the ones who choose to buy, sell, or short
+% these stocks based on some analysis, usually not completely
+% comprehensive, of the factors they observe. Since humans are often
+% unaware or unable to analyze all these competing factors at once,
+% their decisions are often unpredictable or at least very difficult to
+% predict. As such, predicting the price of stocks by modeling these
+% interactions between stock price factors and humans is difficult and
+% unwise. Therefore, we have decided to perform stock analysis by only
+% analyzing past stock trends. This approach, although loses out on a
+% lot of information, is computationally less demanding and easier to
+% find data for performing analysis.
+
+
 
 \section{Classification}
 Using LSTMs to predict stock pricing is, for the most part, a solved
