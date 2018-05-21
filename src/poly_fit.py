@@ -79,14 +79,17 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
     # Slice data into windows
     data, window_size = scraper.slice_windows(fetched_data)
 
-    fig = plt.figure()
-
+    # Initialize empty array for holding the fast fourier transform
     total_fft_data = []
 
     print("==> Applying n-dimensional fast fourier transform...")
-    transformed = []
-    for windows, symbol in progressbar.progressbar(data):
 
+    transformed = []
+
+    # Iterate through each of the windowed datasets, extracting the
+    # stock symbol used to represent each.
+    for windows, symbol in progressbar.progressbar(data):
+        print(len(windows))
         # Initialize empty list for vectors of polynomial coefficients
         # at each window
         z_list = []
@@ -118,37 +121,50 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
             # term into a single vector. So we initialize that
             for i in range(degree):
                 sep_vec += [[]]
-            # And then add the
+            # And then add the correct entry for each thing. Again,
+            # we're really just transposing to get the columns to be
+            # coefficients for the same degree.
             for vec in z_list:
                 for i in range(degree):
                     sep_vec[i] += [vec[i]]
         else:
+            # In the one-dimensional case, our work is pretty much
+            # already done. We just wrap it in an extra list to make
+            # the code below work in this case too.
             sep_vec = [z_list]
 
-        # Apply the n-dimensional fast fourier transform over all axes
+        # Apply the n-dimensional fast fourier transform by columns,
+        # so that we can do frequency analysis on the stuff.
         transformed = np.array([np.fft.fft(vec) for vec in sep_vec])
 
-        # Label it, and append it to the output list
+        # Label it, and append it to the output list.
         total_fft_data += [(transformed, symbol)]
 
-
+        # If we don't want to plot things, skip all of the steps
+        # below.
         if not plot:
             continue
 
-        t = np.array(list(range(len(sep_vec[0]))))
-
+        # Else, we initialize the figure to plot onto.
         fig = plt.figure()
 
-        if degree >= 3:
+        # Get an array that we can plot things against.
+        t = np.array(list(range(len(sep_vec[0]))))
+
+        # If our degree is >= 2, we want to plot in 3d. So we make it
+        # happen.
+        if degree >= 2:
             ax = fig.add_subplot(111, projection="3d")
             line = ax.plot(sep_vec[0], sep_vec[1], sep_vec[2])
             ax.plot(sep_vec[0], sep_vec[1], sep_vec[2], "k<")
 
-        elif degree == 2:
+        # Else, we want to plot the two parameters against each other.
+        elif degree == 1:
             ax = fig.add_subplot(111)
             line = ax.plot(sep_vec[0], sep_vec[1])
             ax.plot(sep_vec[0], sep_vec[1], "k<")
 
+        # Else
         else:
             ax = fig.add_subplot(111)
             line = ax.plot(t, sep_vec[0])
@@ -242,7 +258,6 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
                 "Covariance of {0} and {1}".format(
                     new_fft_data[i][1], new_fft_data[j][1])
             )
-            print(cov_list[i][j])
     print("Done.")
 
     cov_list = np.array(cov_list)
