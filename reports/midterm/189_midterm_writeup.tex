@@ -74,9 +74,42 @@ has a rough idea of where we'll be going:
 \item Conclusion
 \end{enumerate}
 
-\section{}
+\section{Motivation}
+Stock prices can be influenced by many factors such as other stock prices,
+anticipation of capital gains or losses, global politics, earnings reports, and
+etc. These factors may each have a different weighting on the stock depending
+on time and which stock is being analyzed in question. For example, earnings
+reports might have significantly more impact on stock prices immediately after
+release as opposed to two months after the report comes out. Another example
+would be that global politics might influence the stock price of \textbf{LMT}
+(Lockheed Martin), an aerospace and defense company, more than the stock price
+of \textbf{BKC} (Burger King), a fast food restaurant chain.
 
-\section{Goal for the Model}
+Ultimately, humans are the ones who choose to buy, sell, or short these stocks
+based on some analysis, usually not completely comprehensive, of the factors
+they observe. Since humans are often unaware or unable to analyze all these
+competing factors at once, their decisions are often unpredictable or at least
+very difficult to predict. As such, predicting the price of stocks by modeling
+these interactions between stock price factors and humans is difficult and
+unwise. Therefore, we have decided to perform stock analysis by only analyzing
+past stock trends. This approach, although loses out on a lot of information,
+is computationally less demanding and easier to find data for performing
+analysis.
 
+\section{Goals}
+
+Our ultimate goal is to be able to use past stock data to train our model. Then
+given some stock trend data for some stock, use our model to predict the
+upcoming trends and return a vector of decisions. An example of the output is
+shown below.
+
+$$\mathbf{y} = \Bigl<P_{buy}(\mathbf{x}), P_{sell}(\mathbf{x}),
+P_{short}(\mathbf{x}), P_{nothing}(\mathbf{x})\Bigr>$$
+
+Here, $P_{buy}(\mathbf{x})$ represents how confident the model is in
+recommending the user to buy the stock. Similarly, $P_{sell}(\mathbf{x})$
+represents selling the stock, $P_{short}(\mathbf{x})$ represents shorting the
+stock, and $P_{nothing}(\mathbf{x})$ represents doing nothing. All these
+probabilities should sum to 1.
 
 \end{document}
