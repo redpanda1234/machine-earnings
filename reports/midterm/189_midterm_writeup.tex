@@ -317,7 +317,18 @@ date
 \end{verbatim}
 
 For each stock, we computed the arithmetic mean of the high and low as a
-heuristic that summarized the price of the stock in that minute.
+heuristic that summarized the price of the stock in that minute. We decided to
+ignore the data for the volume of trading, the open price, and the close price
+since stock prices vary quite a bit and we felt that the high and low prices
+would be sufficient in giving us an estimate of how the stock was preforming at
+that moment in time. Furthermore, we plan on performing a polynomial fit on the
+data so the slight differences that the other pieces of information included
+might make would probably be insignificant after the polynomial fit.
+
+In the future, other possible metrics for analyzing stock trends might to be
+measure its variability by taking the difference of the high and low prices or
+consider the how many people trade the stock by analyzing the volume of
+trading.
 
 \subsection{Polynomial Fitting on Windowed Data}
 
@@ -369,6 +380,23 @@ The distribution of the coefficients in three dimensional space seems to be a
 multivariate Gaussian distribution. Furthermore, it seems to be very flat,
 appearing to be a line if viewed from the correct angle. The trajectory of the
 points also seems to be rotating around the center of the distribution.
+
+We experimented with different window sizes and different amounts of shifting
+between consecutive windows. We found that in general, varying the window sizes
+did not affect the shape of our graphs much but the amounts of shifting
+affected the smoothness and trajectories of our graphs. If the amount of
+shifting was large, such as if it were half the size of a window, then the
+trajectory would be very rough and edgy. If this value were to increase even
+more such that there was no overlap between windows, the trajectory would be
+random, as shown below.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/coeff3}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:coeff}
+\end{figure}
 
 \subsection{Frequency Analysis}
 
