@@ -23,6 +23,9 @@
 
 % \usepackage{lmodern}
 
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{float}
 \usetikzlibrary{shapes, arrows}
@@ -251,6 +254,25 @@ we decided to focus our work on augmenting the filtering stage shown
 above. We were particularly interested in finding new representations
 of market trends that we could feed into the network.
 
+
+\subsection{Polynomial Fitting on Windowed Data}
+\begin{figure}
+  \centering
+  \begin{subfigure}{.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/sliding1}
+  \end{subfigure}%
+  \begin{subfigure}{.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/sliding2}
+  \end{subfigure}
+  \begin{subfigure}{.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/sliding3}
+  \end{subfigure}
+  \caption{Sliding windows of data fitted with polynomials}
+  \label{fig:sliding}
+\end{figure}
 
 \subsection{Frequency Analysis}
 
