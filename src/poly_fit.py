@@ -44,7 +44,7 @@ def func(x, *args):
 
     return result
 
-def main(degree=5, cache_data=False, use_cached_data=False, plot=True):
+def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
     """
     main performs polynomial fits on windowed stock data (see
     scraper.py) and plots the coefficients in R^3.
@@ -84,12 +84,14 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=True):
     total_fft_data = []
 
     print("==> Applying n-dimensional fast fourier transform...")
-
+    transformed = []
     for windows, symbol in progressbar.progressbar(data):
 
-        # Initialize empty list for polynomial coefficients
+        # Initialize empty list for vectors of polynomial coefficients
+        # at each window
         z_list = []
 
+        # Get the polynomial coefficients for each window
         for window in windows:
             x = np.array(list(range(window_size)))
             z = np.polyfit(x, window, degree)
@@ -103,19 +105,32 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=True):
             # plt.show()
             # plt.close()
 
+        # In sep vec, we just group all of the coefficients of a given
+        # order together. E.g., all the coefficients for the constant
+        # term, etc. into one single vector.
         sep_vec = []
 
+        # If we have more than one coefficient, we want to group
+        # coefficients of the same degree together. The code below
+        # basically transposes z_list to achieve this.
         if degree > 1:
+            # ...we want to group coefficients for the same degree
+            # term into a single vector. So we initialize that
             for i in range(degree):
                 sep_vec += [[]]
+            # And then add the
             for vec in z_list:
                 for i in range(degree):
                     sep_vec[i] += [vec[i]]
         else:
             sep_vec = [z_list]
 
-        transformed = np.fft.fftn(sep_vec)
+        # Apply the n-dimensional fast fourier transform over all axes
+        transformed = np.array([np.fft.fft(vec) for vec in sep_vec])
+
+        # Label it, and append it to the output list
         total_fft_data += [(transformed, symbol)]
+
 
         if not plot:
             continue
@@ -237,11 +252,10 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=True):
             det_list[i][j] = det_list[j][i] = np.linalg.det(cov_list[i][j][0])
 
     print(det_list)
-    return cov_list
 
-
+    return transformed
 
 if __name__ == "__main__":
     cache_data = "--cache-data" in sys.argv[1:]
     use_cached_data = "--use-cached-data" in sys.argv[1:]
-    main(cache_data=cache_data, use_cached_data=use_cached_data)
+    transformed = main(cache_data=cache_data, use_cached_data=use_cached_data)

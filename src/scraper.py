@@ -142,7 +142,7 @@ def slice_windows(data, window_size=20, shift_size=1, normalize=True):
         avg_arr = [(x[1] + x[2])/2 for x in data_array]
 
         if normalize:
-            tot_avg = avg_arr.sum() / (len(avg_arr))
+            tot_avg = sum(avg_arr) / (len(avg_arr))
             avg_arr /= tot_avg
 
         # Figure out how many windows there are
