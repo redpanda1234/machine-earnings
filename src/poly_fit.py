@@ -155,14 +155,16 @@ def main(degree=3, cache_data=False, use_cached_data=False, plot=True):
         # happen.
         if degree >= 2:
             ax = fig.add_subplot(111, projection="3d")
-            line = ax.plot(sep_vec[0], sep_vec[1], sep_vec[2])
-            ax.plot(sep_vec[0], sep_vec[1], sep_vec[2], "k<")
+            # We plot the constant, linear, and quadratic coefficients since
+            # they are more likely to give low frequency noise.
+            line = ax.plot(sep_vec[-1], sep_vec[-2], sep_vec[-3])
+            ax.plot(sep_vec[-1], sep_vec[-2], sep_vec[-3], "k<")
 
         # Else, we want to plot the two parameters against each other.
         elif degree == 1:
             ax = fig.add_subplot(111)
-            line = ax.plot(sep_vec[0], sep_vec[1])
-            ax.plot(sep_vec[0], sep_vec[1], "k<")
+            line = ax.plot(sep_vec[1], sep_vec[0])
+            ax.plot(sep_vec[1], sep_vec[0], "k<")
 
         # Else
         else:
