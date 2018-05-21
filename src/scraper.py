@@ -72,9 +72,25 @@ def fetch_data(interval="1min", num_stocks=10, cache_data=False):
 
     # Lastly, keep the symbol for the data with the data itself, so
     # that we can graph things easily later
+    rows = [] # the number of rows for each stock data set
     for sym in progressbar.progressbar(symbol_subset):
+        temp = ts.get_intraday(sym, interval=interval, outputsize="full")[0]
+        row, col = temp.shape
+        rows.append(row)
         data += [(ts.get_intraday(sym, interval=interval, outputsize =
                                   "full")[0], sym)]
+
+    # Make all the data the same length
+    new_data = []
+    min_rows = min(rows)
+    for dat, sym in data:
+        new_data.append((dat[:min_rows], sym))
+    data = new_data
+
+    # Cut the data to ensure the data for each stock is the same
+    # length
+    for dat, sym in data:
+        dat = dat.reset_index()
 
     print("Data ingested successfully!")
     print("Total elapsed time {: 4.4f}".format(time.time() -
