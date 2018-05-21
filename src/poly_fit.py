@@ -37,14 +37,14 @@ def func(x, *args):
         as coefficients in
     """
     result = 0.0
-    print(args)
+    # print(args)
     args = list(args)
     for i in range(len(args)):
         result += (args[i] * (x**i))
 
     return result
 
-def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
+def main(degree=3, cache_data=False, use_cached_data=False, plot=True):
     """
     main performs polynomial fits on windowed stock data (see
     scraper.py) and plots the coefficients in R^3.
@@ -89,7 +89,7 @@ def main(degree=5, cache_data=False, use_cached_data=False, plot=False):
     # Iterate through each of the windowed datasets, extracting the
     # stock symbol used to represent each.
     for windows, symbol in progressbar.progressbar(data):
-        print(len(windows))
+        # print(len(windows))
         # Initialize empty list for vectors of polynomial coefficients
         # at each window
         z_list = []

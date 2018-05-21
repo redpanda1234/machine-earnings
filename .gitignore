@@ -94,3 +94,6 @@ api_keys.py
 *.log
 *.pre
 auto/
+*.fdb_latexmk
+*.fls
+*.synctex.gz
