@@ -92,6 +92,7 @@ api_keys.py
 *.aux
 *.out
 *.log
+*.pdf
 *.pre
 auto/
 *.fdb_latexmk
