@@ -23,6 +23,10 @@
 
 % \usepackage{lmodern}
 
+\usepackage{tikz}
+\usepackage{float}
+\usetikzlibrary{shapes, arrows}
+
 \title{Formatting instructions for NIPS 2017}
 
 % The \author macro works with any number of authors. There are two
@@ -77,6 +81,106 @@ has a rough idea of where we'll be going:
 \section{}
 
 \section{Goal for the Model}
+Our large-scale goal for the model is as follows:
+\begin{figure}[H]
+  \centering
+    \begin{tikzpicture}[node distance = 2cm, auto]
+      \tikzstyle{data} = [
+        diamond,
+        draw,
+        fill=orange!40,
+        text width = 5em,
+        text badly centered,
+        node distance = 3cm,
+        inner sep = 0pt
+      ]
+
+      \tikzstyle{code} = [
+        rectangle,
+        draw,
+        fill=blue!20,
+        text width=7em,
+        text centered,
+        minimum height=4em
+      ]
+
+      \tikzstyle{network} = [
+        rectangle,
+        draw,
+        dashed,
+        fill=green!20,
+        text width = 6em,
+        text centered,
+        rounded corners,
+        minimum height = 4em
+      ]
+
+      \tikzstyle{feedforward} = [
+        rectangle,
+        draw,
+        dashed,
+        fill=red!20,
+        text width = 6em,
+        text centered,
+        rounded corners,
+        minimum height = 4em
+      ]
+
+      \tikzstyle{filter} = [
+        draw,
+        rectangle,
+        fill=red!20,
+        text width = 6em,
+        text centered,
+        minimum height=3em,
+        rounded corners
+      ]
+
+      \tikzstyle{decision} = [
+        draw,
+        rectangle,
+        fill=yellow!20,
+        text width = 6em,
+        text centered,
+        minimum height=3em,
+        rounded corners
+      ]
+
+      \node[code] (webscraper) at (0,6) {Webscraper};
+      \node[data] (time series) at (-4,3) {Stock data};
+      \node[data] (text) at (4,3) {Text data};
+      \node[code] (processer) at (4,0) {Sentiment Analysis (NLP /
+        LSTM)};
+      \node[filter] (filter) at (-2,0) {Filter};
+      \node[network] (lstm1) at (-2,-2) {LSTM (1)};
+      \node[network] (lstm2) at (-6,-2) {LSTM (2)};
+      \node[feedforward] (feedforward) at (-4,-4) {FFN};
+
+      \node[decision] (decision) at (-4,-6) {Decision};
+
+      \draw[-latex] (webscraper) -| (time series);
+      \draw[-latex] (webscraper) -| (text);
+      \draw[-latex] (text) -- (processer);
+      \draw[-latex] (time series) -| (filter);
+      \draw[-latex] (filter) -- (lstm1);
+      \draw[-latex] (processer) -- (filter);
+      \draw[-latex] (time series) -| (lstm2);
+      \draw[-latex] (lstm2) |- (feedforward);
+      \draw[-latex] (lstm1) |- (feedforward);
+      \draw[-latex] (feedforward) -- (decision);
+      \draw (decision) -- (0,-6) -- (0,-.25);
+      \draw[-latex] (0,-.25) -- (-.82,-.25);
+    \end{tikzpicture}
+  \caption{Goal for the model}
+  \label{fig:goal}
+\end{figure}
+
+\section{Classification}
+Using LSTMs to predict stock pricing is, for the most part, a solved
+problem. Implementations and hyperparameters may differ, of course,
+but underneath, the structure of the model is largely the same. Hence,
+we decided to focus our work on augmenting the LSTM
+\subsection{Frequency Analysis}
 
 
 \end{document}
