@@ -104,6 +104,60 @@ def fetch_data(interval="1min", num_stocks=10, cache_data=False):
 
     return data
 
+def fetch_all_data(interval="1min"):
+    """
+    Fetch all S&P500 stock data from the alphavantage API and cache it in
+    data/cached_snp_data.p.
+
+    Arguments:
+        <interval> -- a string detailing how detailed we want the
+        stock data we obtain to be, assuming an intraday timeseries.
+        Can be "1min", "5min", "15min", "30min", or "60min".
+
+    Returns:
+        <data> -- a list of time-series stock data for the stocks of the S&P
+        500, with reporting frequency specified by <interval>.
+    """
+    print("==> Fetching data...")
+    start_time = time.time()
+
+    # Get our API key for alphavantage
+    alphavantage_key = api_keys.alphavantage_key
+
+    # Initialize the timeseries data object
+    ts = TimeSeries(key=alphavantage_key, output_format="pandas")
+
+    # Read in a csv of the data for all the S&P 500 stocks. Data
+    # sourced from
+    # https://github.com/datasets/s-and-p-500-companies
+    names = pd.read_csv("data/S&P_500_stocks.csv", sep=",")
+
+    # Slice the array to just get the symbols for the stocks, so that
+    # we can iterate through pulling from the API.
+    symbols = names["Symbol"].values
+
+    # Initialize data.
+    data = []
+
+    # TODO: Fix API call frequency so the API doesn't complain.
+    # Append data for each stock into the data list.
+    for sym in progressbar.progressbar(symbols):
+        data += [(ts.get_intraday(sym, interval=interval, outputsize =
+                                  "full")[0], sym)]
+        # Wait 3 seconds before the next API call so the API doesn't complain
+        # about the rapid succession of requests.
+        time.sleep(3)
+
+    print("Data ingested successfully!")
+    print("Total elapsed time {: 4.4f}".format(time.time() -
+        start_time))
+
+    # Cache downloaded data to data directory
+    cached_data_filename = "data/cached_snp_data.p"
+    pickle.dump(data, open(cached_data_filename, "wb"))
+    print("Cached downloaded stock data in " + cached_data_filename + ".")
+
+    return data
 
 def slice_windows(data, window_size=20, shift_size=2, normalize=True):
     """
@@ -177,3 +231,6 @@ def slice_windows(data, window_size=20, shift_size=2, normalize=True):
     print("Elapsed time{: 4.4f}".format(time.time() - start_time))
 
     return (windowed_data, window_size)
+
+if __name__ == "__main__":
+    fetch_all_data()
