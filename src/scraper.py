@@ -167,6 +167,44 @@ def fetch_all_data(interval="1min"):
 
     return data
 
+def process_no_window(data, normalize=True):
+    """
+    process_no_windows does some simple averaging on the input array
+    to get single values for the time-series stock data
+
+    Arguments:
+        <data> -- (array_like) an array of arrays of time-series stock
+        data, entries formatted as numpy array structured like
+        [<open_price>, <high_price>, <low_price>, <close_price>,
+        <volume>].
+
+    Returns:
+        <avg_arrs> -- (array_like > (array_like)) an array of arrays
+        of averaged values for said stock data
+    """
+
+    # Convert pandas dataframes to numpy arrays
+    data = [(x.values, y) for (x, y) in data]
+
+    # initialize windowed_data
+    avg_arrs = []
+
+    for data_tup in progressbar.progressbar(data):
+
+        data_array = data_tup[0]
+
+        # Get average price over each interval
+        avg_arr = [(x[1] + x[2])/2 for x in data_array]
+
+        if normalize:
+            tot_avg = sum(avg_arr) / (len(avg_arr))
+            avg_arr /= tot_avg
+
+        avg_arrs.append((np.array(avg_arr), data_tup[1]))
+
+    return avg_arrs
+
+
 def slice_windows(data, window_size=20, shift_size=2, normalize=True):
     """
     slice_windows converts time-series stock data into small windows.
@@ -176,9 +214,10 @@ def slice_windows(data, window_size=20, shift_size=2, normalize=True):
     performs this task.
 
     Arguments:
-        <data> -- (array_like) a list of time-series stock data,
-        formatted as a numpy array structured like [<open_price>,
-        <high_price>, <low_price>, <close_price>, <volume>].
+        <data> -- (array_like > (array_like)) an array of arrays of
+        time-series stock data, each of which is formatted as a numpy
+        array structured like [<open_price>, <high_price>,
+        <low_price>, <close_price>, <volume>].
 
         <window_size> -- (int) describes how many points of stock data we want
         each window to contain.
