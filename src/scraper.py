@@ -142,11 +142,16 @@ def fetch_all_data(interval="1min"):
     # TODO: Fix API call frequency so the API doesn't complain.
     # Append data for each stock into the data list.
     for sym in progressbar.progressbar(symbols):
-        data += [(ts.get_intraday(sym, interval=interval, outputsize =
-                                  "full")[0], sym)]
-        # Wait 3 seconds before the next API call so the API doesn't complain
-        # about the rapid succession of requests.
-        time.sleep(3)
+        try:
+            data += [(ts.get_intraday(sym, interval=interval, outputsize =
+                                      "full")[0], sym)]
+            # Wait 3 seconds before the next API call so the API doesn't complain
+            # about the rapid succession of requests.
+            time.sleep(3)
+        except:
+            # If the API call doesn't work, say which stock symbol it
+            # is erroring on and continue
+            print("Error with the stock symbol: " + sym)
 
     print("Data ingested successfully!")
     print("Total elapsed time {: 4.4f}".format(time.time() -
