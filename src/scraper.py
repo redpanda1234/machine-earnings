@@ -149,7 +149,7 @@ def fetch_all_data(interval="1min"):
                                   "full")[0], sym)]
         # Wait 3 seconds before the next API call so the API doesn't complain
         # about the rapid succession of requests.
-        time.sleep(3)
+        time.sleep(2)
 
     print("Data ingested successfully!")
     print("Total elapsed time {: 4.4f}".format(time.time() -
