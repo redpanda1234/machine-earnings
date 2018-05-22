@@ -414,7 +414,60 @@ random, as shown below.
   \label{fig:coeff}
 \end{figure}
 
-\subsection{Frequency Analysis}
+\subsection{Fourier Analysis}
 
+We would like to be able to compare stocks and be able to say how similar two
+stocks are based on trends. To do this, we need some quantitative measure of
+the stock trends. The vectors of coefficients that we have are insufficient for
+several reasons. For one, we could have two stocks whose behavior is almost
+exactly the same except one is a scaled and shifted version of the other. To
+remedy this situation, we could do some sort of scaling of shifting of our
+coefficients but that may be difficult and impractical since the two stocks may
+in fact be different and this sort of scaling and shifting would be
+computationally intensive and pointless. Another issue that we may run across
+is that two stocks may resemble each other in two or more different disjoint
+periods of time but different elsewhere. This resemblance is something we want
+to consider since this can help us in predicting the future behavior of our
+stocks. If we attempt to perform this scaling and shifting operation on the
+coefficients, we may at best have one of these similar regions overlap. We
+could try scaling and shifting subsets of our coefficients but that would be
+even more computationally expensive. To remedy the situation, we have to find a
+new metric by which we compare two different stocks and their trends.
+
+We decided that analyzing the periodic behavior of our stocks would capture
+this information better. We hypothesize that two similar stocks will have
+similar periodic behavior. To extract information about the periodicity of our
+data, we performed a discrete fast Fourier transform on each of our coefficient
+vectors, i.e. we performed the Fourier transform on all the constant terms in
+each window to extract information about the periodicity of the constant terms,
+then another transform on all the linear terms, etc. We decided to perform the
+Fourier transform on the coefficients instead of the actual stock prices
+because we decided that it would be a good proxy and we wanted to see whether
+Fourier analysis on the coefficients would provide us with new insights into
+this abstract information of coefficients.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/fourier1}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:coeff}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/fourier2}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:coeff}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/fourier3}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:coeff}
+\end{figure}
 
 \end{document}
