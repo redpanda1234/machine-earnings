@@ -269,7 +269,11 @@ computing power, just that this model could accomplish what we desire.
       ]
 
       \tikzstyle{otimes} = [
-
+        draw,
+        circle,
+        fill=gray!20,
+        text centered,
+        inner sep = -2pt
       ]
 
       \node[code] (webscraper) at (0,6) {Webscraper};
@@ -285,8 +289,8 @@ computing power, just that this model could accomplish what we desire.
       \node[data] (metadata) at (1,3) {Metadata};
       \node[draw, rectangle, fill=red!20, text width = 3em, text
       centered, minimum height = 2em, rounded corners, dashed]
-      (ffilter) at (1,1.25) {FFN (1)};
-      \node (otimes) at (1,0) {$\bigotimes$};
+      (ffilter) at (1,1) {FFN (1)};
+      \node[otimes] (otimes) at (1,0) {$\bigotimes$};
 
 
 
@@ -331,17 +335,46 @@ let's walk through the rationale before discounting it entirely:
     Natural Language Processing methods on the input data (e.g.,
     sentiment analysis), to try and quantify whether the article
     represents good news or bad news for some stock.
-  \item The metadata will be used to
+  \item We feed the metadata into a feedforward network that is
+    trained to determine the bias of the source from which each datum
+    was obtained. The $\tanh()$ function will be used, because we
+    want to be able to ``flip'' the input from some organization if
+    it consistently predicts the opposite of what actually happens.
+  \item At the $\otimes$ junction, we do elementwise multiplication of
+    the output from FFN (1) with the output from our sentiment
+    analysis of our articles. These will then be sorted by the stocks
+    they apply to, and we will take the harmonic mean of these values
+    to obtain a single predictive value for the behavior of the stock
+    in the near future.
+  \item Next, we feed this into a filter, which will choose a few
+    families of stocks for LSTM (1) to focus on. The filter might
+    include some neural architecture itself, and will incorporate
+    information about the network's current assests.
+  \item We take the most significant stocks output by the filter,
+    along with some sentiment data about it, and feed this heavily
+    into LSTM (1), which will be a relatively deep network.
+  \item Simultaneously, we feed the unprocessed stock data (without
+    selecting a noteworthy subset) into LSTM (2), which will be a much
+    shallower network, the idea being that LSTM (2) might pick up on
+    noteworthy trends that the news articles missed.
+  \item Finally, this is input into a small feedforward network that
+    aggregates the processed and unprocessed inputs, and returns
+    decisions to buy, sell, short, or do nothing with respect to some
+    particular stock. The process is then repeated, and ideall the
+    network would turn a profit.
 \end{enumerate}
 
-\section{Classification}
-Using LSTMs to predict stock pricing is, for the most part, a solved
+For today's paper, we focused on the filtering stage. In particular,
+we wanted to identify ways of classifying families of noteworthy
+stocks that LSTM (1) could make predictions on, and identify abstract
+relationships between pricing of various stocks. Our rationale was
+this: most of the other components of the diagram are famous problems
+that others have already performed lost of work on. That is, using
+LSTMs to predict stock pricing is, for the most part, a solved
 problem. Implementations and hyperparameters may differ, of course,
-but underneath, the structure of the model is largely the same. Hence,
-we decided to focus our work on augmenting the filtering stage shown
-above. We were particularly interested in finding new representations
-of market trends that we could feed into the network.
-
+but underneath, the structure of the model is largely the same. We saw
+the filtering process as the component we could perhaps make
+advancments on.
 \section{Methods}
 
 \subsection{Data Scraping}
