@@ -10,6 +10,9 @@ import time
 
 import api_keys
 
+def word_to_vec(word_string):
+    return
+
 def fetch_data(interval="1min", num_stocks=10, cache_data=False):
     """
     Fetch stock data from the alphavantage API.
@@ -147,7 +150,7 @@ def fetch_all_data(interval="1min"):
                                       "full")[0], sym)]
             # Wait 3 seconds before the next API call so the API doesn't complain
             # about the rapid succession of requests.
-            time.sleep(3)
+            time.sleep(2)
         except:
             # If the API call doesn't work, say which stock symbol it
             # is erroring on and continue
