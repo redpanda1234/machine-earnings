@@ -3,8 +3,6 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from scipy.signal import butter, lfilter, freqz
-
 import numpy as np
 import pickle
 import sys
@@ -12,17 +10,6 @@ import sys
 import scraper
 
 import progressbar
-
-def butter_lowpass(cutoff, fs, order=5):
-    nyq = 0.5 * fs
-    normal_cutoff = cutoff / nyq
-    b, a = butter(order, normal_cutoff, btype="low", analog=False)
-    return b, a
-
-def butter_lowpass_filter(data, cutoff, fs, order=5):
-    b, a = butter_lowpass(cutoff, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
 
 def func(x, *args):
     """
@@ -268,11 +255,9 @@ def main(degree=3, cache_data=False, use_cached_data=False, plot=True):
         for j in range(cov_list.shape[0] - i):
             det_list[i][j] = det_list[j][i] = np.linalg.det(cov_list[i][j][0])
 
-    print(det_list)
-
     return transformed
 
 if __name__ == "__main__":
     cache_data = "--cache-data" in sys.argv[1:]
     use_cached_data = "--use-cached-data" in sys.argv[1:]
-    transformed = main(cache_data=cache_data, use_cached_data=use_cached_data)
+    transformed = main(cache_data=cache_data, use_cached_data=use_cached_data, plot=False)

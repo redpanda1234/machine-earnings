@@ -10,6 +10,9 @@ import time
 
 import api_keys
 
+def word_to_vec(word_string):
+    return
+
 def fetch_data(interval="1min", num_stocks=10, cache_data=False):
     """
     Fetch stock data from the alphavantage API.
