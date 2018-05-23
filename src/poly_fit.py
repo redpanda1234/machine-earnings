@@ -31,7 +31,7 @@ def func(x, *args):
 
     return result
 
-def main(degree=3, cache_data=False, use_cached_data=False, plot=True):
+def main(degree=4, cache_data=False, use_cached_data=False, plot=True, windowed=True, use_all_data=False):
     """
     main performs polynomial fits on windowed stock data (see
     scraper.py) and plots the coefficients in R^3.
@@ -58,6 +58,18 @@ def main(degree=3, cache_data=False, use_cached_data=False, plot=True):
                 fetched_data = pickle.load(open(cached_data_filename, "rb"))
         except FileNotFoundError:
             print("Cached data not found in " + cached_data_filename + "...")
+            print("Downloading data instead...")
+            fetched_data = scraper.fetch_data(cache_data=cache_data)
+    elif use_all_data:
+        plot=False
+        all_data_filename = "data/cached_snp_data.p"
+        try:
+            with open(all_data_filename) as all_data:
+                print("Using cached data found in " + all_data_filename \
+                        + "...")
+                fetched_data = pickle.load(open(all_data_filename, "rb"))
+        except FileNotFoundError:
+            print("Cached data not found in " + all_data_filename + "...")
             print("Downloading data instead...")
             fetched_data = scraper.fetch_data(cache_data=cache_data)
     else:
@@ -106,13 +118,13 @@ def main(degree=3, cache_data=False, use_cached_data=False, plot=True):
         if degree > 1:
             # ...we want to group coefficients for the same degree
             # term into a single vector. So we initialize that
-            for i in range(degree):
+            for i in range(degree+1):
                 sep_vec += [[]]
             # And then add the correct entry for each thing. Again,
             # we're really just transposing to get the columns to be
             # coefficients for the same degree.
             for vec in z_list:
-                for i in range(degree):
+                for i in range(degree+1):
                     sep_vec[i] += [vec[i]]
         else:
             # In the one-dimensional case, our work is pretty much
@@ -142,10 +154,8 @@ def main(degree=3, cache_data=False, use_cached_data=False, plot=True):
         # happen.
         if degree >= 2:
             ax = fig.add_subplot(111, projection="3d")
-            # We plot the constant, linear, and quadratic coefficients since
-            # they are more likely to give low frequency noise.
-            line = ax.plot(sep_vec[-1], sep_vec[-2], sep_vec[-3])
-            ax.plot(sep_vec[-1], sep_vec[-2], sep_vec[-3], "k<")
+            line = ax.plot(sep_vec[0], sep_vec[1], sep_vec[2])
+            ax.plot(sep_vec[0], sep_vec[1], sep_vec[2], "k<")
 
         # Else, we want to plot the two parameters against each other.
         elif degree == 1:
@@ -230,22 +240,22 @@ def main(degree=3, cache_data=False, use_cached_data=False, plot=True):
 
     new_fft_data = []
 
-    for matrix, symbol in total_fft_data:
-        zeros = np.zeros((degree, max_x))
-        zeros[:matrix.shape[0],:matrix.shape[1]] = matrix
-        new_fft_data += [(zeros, symbol)]
+    # for matrix, symbol in total_fft_data:
+    #     zeros = np.zeros((degree, max_x))
+    #     zeros[:matrix.shape[0],:matrix.shape[1]] = matrix
+    #     new_fft_data += [(zeros, symbol)]
 
     cov_list = [[[] for _ in range(len(total_fft_data))] for _ in\
     range(len(total_fft_data))]
 
     print("==> Calculating covariance data...")
 
-    for i in range(len(new_fft_data)):
-        for j in range(len(new_fft_data)-i):
+    for i in range(len(total_fft_data)):
+        for j in range(len(total_fft_data)-i):
             cov_list[i][j] = cov_list[j][i] = (
-                np.cov(new_fft_data[i][0], new_fft_data[j][0]),
+                np.cov(total_fft_data[i][0], total_fft_data[j][0]),
                 "Covariance of {0} and {1}".format(
-                    new_fft_data[i][1], new_fft_data[j][1])
+                    total_fft_data[i][1], total_fft_data[j][1])
             )
     print("Done.")
 
@@ -255,9 +265,12 @@ def main(degree=3, cache_data=False, use_cached_data=False, plot=True):
         for j in range(cov_list.shape[0] - i):
             det_list[i][j] = det_list[j][i] = np.linalg.det(cov_list[i][j][0])
 
+    print(det_list)
+
     return transformed
 
 if __name__ == "__main__":
     cache_data = "--cache-data" in sys.argv[1:]
     use_cached_data = "--use-cached-data" in sys.argv[1:]
-    transformed = main(cache_data=cache_data, use_cached_data=use_cached_data, plot=False)
+    use_all_data = "--use-all-data" in sys.argv[1:]
+    transformed = main(cache_data=cache_data, use_cached_data=use_cached_data, use_all_data = use_all_data)

@@ -205,7 +205,7 @@ def process_no_window(data, normalize=True):
     return avg_arrs
 
 
-def slice_windows(data, window_size=20, shift_size=2, normalize=True):
+def slice_windows(data, window_size=10, shift_size=2, normalize=True):
     """
     slice_windows converts time-series stock data into small windows.
 
@@ -235,6 +235,20 @@ def slice_windows(data, window_size=20, shift_size=2, normalize=True):
         into windows, and (int) <window_size>. Each array in
         (array_like) corresponds to one stock from <data>.
     """
+
+
+    # Make them all the same length
+    rows = [] # the number of rows for each stock data set
+    for temp, symbol in progressbar.progressbar(data):
+        row, col = temp.shape
+        rows.append(row)
+
+    # Make all the data the same length
+    new_data = []
+    min_rows = min(rows)
+    for dat, sym in data:
+        new_data.append((dat[:min_rows], sym))
+    data = new_data
 
     print("==> Began slicing data into windows...")
 
