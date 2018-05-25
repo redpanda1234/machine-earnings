@@ -170,17 +170,17 @@ def binify(x):
     """
     put values into bins
     """
-    if x > 10:
+    if x > 7.5:
         return 3
-    elif x > 5:
+    elif x > 4.5:
         return 2
-    elif x > 1:
+    elif x > 1.5:
         return 1
-    elif x > -1:
+    elif x > -1.5:
         return 0
-    elif x > -5:
+    elif x > -4.5:
         return -1
-    elif x > -10:
+    elif x > -7.5:
         return -2
     else:
         return -3
@@ -222,15 +222,14 @@ def slope_estimate(data):
             diff = i[-1] - i[0]
             diff *= 1000
 
-            # TODO: fix doc
             # Bin the slopes according to the follow scheme:
-            # x > 10        ->  3
-            # 5 < x < 10    ->  2
-            # 1 < x < 5     ->  1
-            # -1 < x < 1    ->  0
-            # -5 < x < -1   ->  -1
-            # -10 < x < -5  ->  -2
-            # x < -10       ->  -3
+            # x > 7.5           ->   3
+            # 4.5 < x < 7.5     ->   2
+            # 1.5 < x < 4.5     ->   1
+            # -1.5 < x < 1.5    ->   0
+            # -4.5 < x < -1.5   ->  -1
+            # -7.5 < x < -4.5   ->  -2
+            # x < -7.5          ->  -3
             slopes.append(diff)
             binned_slopes.append(binify(diff))
 
