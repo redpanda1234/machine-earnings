@@ -166,6 +166,107 @@ def plot_fourier(sep_vec):
 
     plt.show()
 
+def binify(x):
+    """
+    put values into bins
+    """
+    if x > 7.5:
+        return 3
+    elif x > 4.5:
+        return 2
+    elif x > 1.5:
+        return 1
+    elif x > -1.5:
+        return 0
+    elif x > -4.5:
+        return -1
+    elif x > -7.5:
+        return -2
+    else:
+        return -3
+
+def slope_estimate(data):
+    """
+    data should be pre-windowed
+    """
+
+    # Initialize slope data list. Each element of slope_data is a tuple of the
+    # form (slopes, binned_slopes, sym).
+    slope_data = []
+
+    # Specifiy the number of subplots per plot.
+    num_subplots = 4
+
+    # Set up subplots for plotting data num_subplots stocks at a time.
+    f, axarr = plt.subplots(2, num_subplots)
+    # Counts how many plots we have so far.
+    counter = 0
+    # Determines whether there are some plots we have not shown yet after we
+    # exit the loop.
+    more_to_show = True
+
+    # Iterate through each stock dataset.
+    for dat, sym in data:
+
+        # Initialize slope array for one stock. Both are numpy arrays of the
+        # slopes of each window.
+        slopes = []
+        binned_slopes = []
+
+        # Calculate the slope of each window.
+
+        for i in dat:
+            # Use the difference between the start and end points of each
+            # window as an estimate of the slope in that window. The slope is
+            # scaled by a factor of 1000.
+            diff = i[-1] - i[0]
+            diff *= 1000
+
+            # Bin the slopes according to the follow scheme:
+            # x > 7.5           ->   3
+            # 4.5 < x < 7.5     ->   2
+            # 1.5 < x < 4.5     ->   1
+            # -1.5 < x < 1.5    ->   0
+            # -4.5 < x < -1.5   ->  -1
+            # -7.5 < x < -4.5   ->  -2
+            # x < -7.5          ->  -3
+            slopes.append(diff)
+            binned_slopes.append(binify(diff))
+
+        # Convert lists to numpy arrays.
+        slopes = np.asarray(slopes)
+        binned_slopes = np.asarray(binned_slopes)
+
+        # Append data to slope_data list.
+        slope_data.append((slopes, binned_slopes, sym))
+
+        # Plot the data.
+
+        # Plot the slope data and the binned slope data.
+        axarr[0, counter].plot(range(1, len(slopes) + 1), slopes, 'b.')
+        axarr[0, counter].set_title('Slopes of Windows')
+        axarr[1, counter].hist(slopes, [-3.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
+        axarr[1, counter].set_title('Binned Slopes of Windows')
+        axarr[1, counter].set_xlim([-4,4])
+
+        # Determines whether there are some plots we have not shown yet after
+        # we exit the loop.
+        if not more_to_show:
+            more_to_show = True
+
+        # Determine whether we have 5 plots.
+        counter = (counter + 1) % num_subplots
+        if counter == 0:
+            # If we have num_subplots plots, plot it and make a new plot for
+            # new data.
+            plt.show()
+            f, axarr = plt.subplots(2, num_subplots)
+            more_to_show = False
+
+    if more_to_show:
+        plt.show()
+
+    return slope_data
 
 def poly_fit(data, window_size, degree=5, plot=False):
     """
