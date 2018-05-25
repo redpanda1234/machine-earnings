@@ -2,7 +2,7 @@ import numpy as np
 import time
 import copy
 
-def k_means(X, k, eps=1e-20, max_iter=1000, print_freq=10):
+def k_means(X, k, eps=1e-20, max_iter=5000, print_freq=100):
     """
     This function takes in the following arguments:
         1) X, the data matrix with dimension m x n
@@ -27,10 +27,8 @@ def k_means(X, k, eps=1e-20, max_iter=1000, print_freq=10):
         * X.mean(axis=0), 10 * X.std(axis=0) * np.eye(n), size=k)
     label = np.zeros((m, 1)).astype(int)
     iter_num = 0
-
     while iter_num < max_iter:
         prev_clusters = copy.deepcopy(clusters)
-
         for i in range(m):
             data = X[i, :]
             diff = data - clusters
@@ -62,8 +60,8 @@ def k_means(X, k, eps=1e-20, max_iter=1000, print_freq=10):
         cost_list.append(cost)
 
         # if (iter_num + 1) % print_freq == 0:
-        #     print('-- Iteration {} - cost {:4.4E}'.format(iter_num+
-        #                                                   1, cost))
+            # print('-- Iteration {} - cost {:4.4E}'.format(iter_num+
+            #                                               1, cost))
         if np.linalg.norm(prev_clusters - clusters) <= eps:
             # print('-- Algorithm converges at iteration {} with cost '
             #       '{:4.4E}'.format(iter_num + 1, cost))

@@ -265,8 +265,8 @@ def poly_fit(data, window_size, degree=5, plot=False):
 
 
 
-def main(degree=4, cache_data=False, use_cached_data=True,
-         use_all_data=False, plot=True, windowed=True):
+def main(degree=4, cache_data=False, use_cached_data=False,
+         use_all_data=True, plot=True, windowed=True):
     """
     """
     fetched_data = get_fetched_data(
@@ -279,63 +279,105 @@ def main(degree=4, cache_data=False, use_cached_data=True,
     fft_data, z_list = poly_fit(data, window_size)
     # freq_vecs = [fft_vec for fft_vec in fft_data]
 
-    # num_freqs = 10
-    # total_freqs_data = np.zeros((num_freqs, len(data), 6))
-    # print("freq_stuff")
-    # for freq_index in range(num_freqs):
-    #     this_freq_vec = np.zeros((len(data), 6))
-    #     for i, fft_vec in enumerate(fft_data):
-    #         this_freq_vec[i] = fft_vec[:, freq_index]
-    #     total_freqs_data[freq_index] = this_freq_vec
-    # print("finished")
+    symbol_dict = {i : data[i][1] for i in range(len(data))}
+
     total_freqs_data = np.zeros((6, len(data), fft_data[0].shape[1]))
     for v_ind, fft_vec in enumerate(fft_data):
         for c_ind, coeff_vec in enumerate(fft_vec):
             total_freqs_data[c_ind, v_ind] = np.abs(fft_vec[c_ind])
 
+    k_min = 10
+    k_max = 30
+    label_list = []
 
-    # k_step = 10
-    k_min = 1
-    k_max = 50
-    for w, freq_data in enumerate(total_freqs_data):
-        print("working on coefficient {}".format(w))
+    k_list = []
+    for c_ind, freq_data in enumerate(total_freqs_data):
+        # print("working on coefficient {}".format(c_ind))
         cost_k_list = []
-        for k in progressbar.progressbar(range(k_min, k_max)):
+        for k in range(k_min, k_max):
+            if k % 5 == 0:
+                print("k is {0} of {1} for coefficient {2}".format(k - k_min, k_max - k_min, c_ind))
             clusters, label, cost_list = k_means(freq_data, k)
             cost = cost_list[-1]
             cost_k_list.append(cost)
-        opt_k = np.argmin(cost_k_list) + 1
-
+        opt_k = np.argmin(cost_k_list) + 1 + k_min
 
         plt.plot(range(k_min, k_max), cost_k_list, 'g^')
         plt.plot(opt_k, min(cost_k_list), 'rD')
 
         plt.title('Cost vs Number of Clusters')
-        plt.savefig('plots/kmeans_{0}_ks.png'.format(w), format='png')
+        plt.savefig('plots/kmeans_{0}_ks.png'.format(c_ind), format='png')
         plt.close()
 
         X = freq_data
         clusters, label, cost_list = k_means(X, opt_k)
+        label_list += [np.array(label)]
+        k_list += [opt_k]
         # pt_cluster = clusters[label.flatten()]
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
-        data_plot = ax.plot(X[:, 2], X[:, 50], X[:, 25], "bo", markersize=1)
+        # fig = plt.figure()
+        # ax = fig.add_subplot(111, projection="3d")
+        # data_plot = ax.plot(X[:, 2], X[:, 50], X[:, 25], "bo", markersize=1)
 
-        center_plot = plt.plot(clusters[:, 0], clusters[:, 1], "g^", markersize=1)
+        # center_plot = plt.plot(clusters[:, 0], clusters[:, 1], "g^", markersize=1)
 
+        # # set up legend and save the plot to the current folder
+        # plt.legend((data_plot, center_plot), ('data', 'clusters'), loc = 'best')
+        # plt.title('Visualization with {} clusters'.format(opt_k))
+        # # plt.show()
+        # plt.savefig('plots/kmeans_{0}_{1}.png'.format(c_ind, opt_k), format='png')
+        # plt.close()
 
-        # set up legend and save the plot to the current folder
-        plt.legend((data_plot, center_plot), \
-                   ('data', 'clusters'), loc = 'best')
-        plt.title('Visualization with {} clusters'.format(opt_k))
-        plt.show()
-        plt.savefig('plots/kmeans_{0}_{1}.png'.format(w, opt_k), format='png')
-        plt.close()
+    label_list = np.array(label_list)
+    data_list = []
+    for d_ind in range(label_list.shape[1]):
+        datum = label_list[:, d_ind]
+        out_vec = np.zeros((sum(k_list)))
+        offset = 0
+        for c_ind in range(len(datum)):
+            out_vec[offset+datum[c_ind]] = 1
+            offset += k_list[c_ind]
+        data_list += [out_vec]
 
+    data_list = np.array(data_list)
+    cost_k_list = []
+    k_min = 10
+    k_max = 10000
+    for k in range(k_min, k_max):
+        if k % 10 == 0:
+            print("on {0} of {1}".format(k, k_max))
+        clusters, label, cost_list = k_means(data_list, k)
+        cost = cost_list[-1]
+        cost_k_list.append(cost)
+    opt_k = np.argmin(cost_k_list) + 1
 
+    clusters, label, cost_list = k_means(X, opt_k)
 
-if __name__ == "__main__":
-    cache_data = "--cache-data" in sys.argv[1:]
-    use_cached_data = "--use-cached-data" in sys.argv[1:]
-    use_all_data = "--use-all-data" in sys.argv[1:]
-    main(cache_data=cache_data, use_cached_data=use_cached_data, use_all_data = use_all_data)
+    plt.plot(range(k_min, k_max), cost_k_list, 'g^')
+    plt.plot(opt_k, min(cost_k_list), 'rD')
+
+    plt.title('Cost vs Number of Clusters')
+    plt.savefig('plots/kmeans_layer2_ks.png'.format(c_ind), format='png')
+    plt.close()
+
+    label_symbols = []
+    # print(opt_k)
+    total = 0
+    for i in range(opt_k):
+        ind_arr = np.where(label == i)
+        ind_arr = ind_arr[0]
+        if len(ind_arr) > 0:
+            cluster_syms = []
+            for ind in ind_arr:
+                cluster_syms += [symbol_dict[ind]]
+            label_symbols += [cluster_syms]
+            total += len(cluster_syms)
+    print(total)
+    label_symbols = np.array(label_symbols)
+    print(label_symbols)
+    return label_symbols
+
+# if __name__ == "__main__":
+#     cache_data = "--cache-data" in sys.argv[1:]
+#     use_cached_data = "--use-cached-data" in sys.argv[1:]
+#     use_all_data = "--use-all-data" in sys.argv[1:]
+#     main(cache_data=cache_data, use_cached_data=use_cached_data, use_all_data=use_all_data)

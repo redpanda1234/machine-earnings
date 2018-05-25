@@ -1,0 +1,38 @@
+[[list(['ABT', 'ABBV', 'AAP', 'ALK', 'ALB', 'AGN', 'AAL', 'AMP',
+'AMGN', 'APC', 'ANTM', 'AMAT', 'BHGE', 'BBY', 'BIIB', 'BWA', 'BF.B',
+'CA', 'COF', 'CAH', 'KMX', 'CBOE', 'CELG', 'CNP', 'CERN', 'CMG', 'CI',
+'CMCSA', 'GILD', 'GT', 'GWW', 'HOG', 'HCA', 'HOLX', 'ILMN', 'INCY',
+'IP', 'PFG', 'RRC', 'RJF', 'RMD', 'ROST', 'SCG', 'STX', 'SWKS',
+'TROW', 'TXN', 'DIS', 'TMO', 'TRIP', 'ULTA', 'UAL', 'UPS', 'URI',
+'VRSN', 'VZ', 'WMT', 'WBA', 'WHR', 'XRX', 'XLNX']) 4]
+
+[list(['MMM', 'AOS', 'ACN', 'ATVI', 'AYI', 'ADBE', 'AES', 'AET',
+  'AMG', 'AFL', 'APD', 'AKAM', 'ARE', 'ALXN', 'ALLE', 'ADS', 'LNT',
+  'ALL', 'GOOGL', 'GOOG', 'MO', 'AMZN', 'AEE', 'AEP', 'AXP', 'AIG',
+  'AMT', 'AWK', 'ABC', 'AME', 'APH', 'ADI', 'ANDV', 'ANSS', 'AON',
+  'APA', 'AIV', 'AAPL', 'APTV', 'ADM', 'ARNC', 'AJG', 'T', 'ADSK',
+  'ADP', 'AZO', 'AVB', 'AVY', 'BLL', 'BAC', 'BAX', 'BBT', 'BDX',
+  'BRK.B', 'BLK', 'HRB', 'BA', 'BXP', 'BSX', 'BHF', 'BMY', 'AVGO',
+  'CHRW', 'COG', 'CDNS', 'CPB', 'CCL', 'CAT', 'CBRE', 'CBS', 'CNC',
+  'CF', 'SCHW', 'CHTR', 'CVX', 'CB', 'CHD', 'XEC', 'CINF', 'CTAS',
+  'CSCO', 'C', 'CFG', 'CTXS', 'CME', 'CMS', 'KO', 'CTSH', 'CL', 'CMA',
+  'CAG', 'CXO', 'COP', 'ED', 'STZ', 'EOG', 'GPN', 'GS', 'HAL', 'HBI',
+  'HRS', 'HIG', 'HAS', 'HCP', 'HP', 'HSIC', 'HES', 'HPE', 'HLT', 'HD',
+  'HON', 'HRL', 'HST', 'HPQ', 'HUM', 'HBAN', 'HII', 'IDXX', 'INFO',
+  'ITW', 'IR', 'INTC', 'ICE', 'IBM', 'PG', 'PGR', 'PLD', 'PRU', 'PEG',
+  'PSA', 'PHM', 'PVH', 'QRVO', 'QCOM', 'PWR', 'DGX', 'RTN', 'O',
+  'RHT', 'REG', 'RF', 'RSG', 'RHI', 'ROK', 'COL', 'ROP', 'RCL',
+  'SPGI', 'CRM', 'SBAC',  'SLB', 'SEE', 'SRE', 'SHW', 'SPG', 'SLG',
+  'SNA', 'SO', 'LUV', 'SWK', 'SBUX', 'STT', 'SRCL', 'SYK', 'STI',
+  'SIVB', 'SYF', 'SNPS', 'SYY', 'TTWO', 'TPR', 'TEL', 'FTI', 'TXT',
+  'BK', 'CLX', 'COO', 'HSY', 'MOS', 'TRV', 'TIF', 'TWX', 'TJX', 'TMK',
+  'TSS', 'TSCO', 'TDG', 'FOXA', 'FOX', 'TSN', 'USB', 'UDR', 'UNP',
+  'UNH', 'UTX', 'UHS', 'UNM', 'VFC', 'VLO', 'VAR', 'VTR', 'VRSK',
+  'VRTX', 'V', 'VNO', 'VMC', 'WM', 'WAT', 'WEC', 'WFC', 'WELL', 'WU',
+  'WRK', 'WY', 'WMB', 'WLTW', 'WYN', 'WYNN', 'XEL', 'XL', 'XYL',
+  'YUM', 'ZBH', 'ZION', 'ZTS']) 12]
+
+[list(['AMD', 'ALGN', 'AIZ', 'CTL', 'REGN', 'TGT', 'UAA', 'UA',
+'VIAB', 'WDC']), 27]
+
+[list(['A', 'BKNG', 'SYMC']) 30]]
