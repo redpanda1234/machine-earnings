@@ -8,6 +8,7 @@ import pickle
 import sys
 
 import scraper
+from k_means import *
 
 import progressbar
 
@@ -219,13 +220,12 @@ def poly_fit(data, window_size, degree=5, plot=False):
 
         # If we don't want to plot things, skip all of the steps
         # below.
-        if not plot:
-            continue
-        else:
+        if plot:
             plot_coefficients(degree, sep_vec, symbol)
             plot_fourier(sep_vec)
 
         transformed = np.array([np.fft.fft(vec) for vec in sep_vec])
+        # print(transformed)
         total_fft_data += [transformed]
         total_z_list += [(z_list, symbol)]
 
@@ -260,12 +260,12 @@ def poly_fit(data, window_size, degree=5, plot=False):
     #         det_list[i][j] = det_list[j][i] = np.linalg.det(cov_list[i][j][0])
 
     # print(det_list)
-
+    # print(total_fft_data)
     return total_fft_data, z_list
 
 
 
-def main(degree=4, cache_data=False, use_cached_data=False,
+def main(degree=4, cache_data=False, use_cached_data=True,
          use_all_data=False, plot=True, windowed=True):
     """
     """
@@ -277,6 +277,50 @@ def main(degree=4, cache_data=False, use_cached_data=False,
     # Slice data into windows
     data, window_size = scraper.slice_windows(fetched_data)
     fft_data, z_list = poly_fit(data, window_size)
+    # freq_vecs = [fft_vec[:20] for fft_vec in fft_data]
+
+    num_freqs = 10
+    total_freqs_data = np.zeros((num_freqs, len(data), 6))
+    print("freq_stuff")
+    for freq_index in range(num_freqs):
+        this_freq_vec = np.zeros((len(data), 6))
+        for i, fft_vec in enumerate(fft_data):
+            this_freq_vec[i] = fft_vec[:, freq_index]
+        total_freqs_data[freq_index] = this_freq_vec
+    print("finished")
+
+
+    for w, freq_data in enumerate(total_freqs_data):
+        cost_k_list = []
+        for k in range(1, len(data) // 5):
+            clusters, label, cost_list = k_means(freq_data, k)
+            cost = cost_list[-1]
+            cost_k_list.append(cost)
+        opt_k = np.argmin(cost_k_list) + 1
+
+
+        plt.plot(range(1, len(data) // 5), cost_k_list, 'g^')
+        plt.plot(opt_k, min(cost_k_list), 'rD')
+
+        plt.title('Cost vs Number of Clusters')
+        plt.savefig('plots/kmeans_{0}_ks.png'.format(w), format='png')
+        plt.close()
+
+        X = freq_data
+
+        clusters, label, cost_list = k_means(X, opt_k)
+        # pt_cluster = clusters[label.flatten()]
+        data_plot = plt.plot(X[:, 0], X[:, 1], "bo", markersize=1)
+        center_plot = plt.plot(clusters[:, 0], clusters[:, 1], "g^")
+
+
+        # set up legend and save the plot to the current folder
+        plt.legend((data_plot, center_plot), \
+                   ('data', 'clusters'), loc = 'best')
+        plt.title('Visualization with {} clusters'.format(opt_k))
+        plt.savefig('plots/kmeans_{0}_{1}.png'.format(w, opt_k), format='png')
+        plt.close()
+
 
 if __name__ == "__main__":
     cache_data = "--cache-data" in sys.argv[1:]
