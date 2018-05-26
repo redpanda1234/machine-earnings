@@ -1,0 +1,36 @@
+[list(['SYMC'])
+ list(['ABT', 'ABBV', 'AYI', 'AET', 'ALB', 'ALXN', 'AGN', 'AAL',
+ 'AWK', 'AMP', 'ANSS', 'ANTM', 'AIV', 'AVB', 'BBY', 'BKNG', 'CPB',
+ 'COF', 'KMX', 'CBOE', 'CBS', 'CELG', 'CNP', 'CMG', 'CI', 'CMCSA',
+ 'GWW', 'HP', 'INCY', 'PSA', 'RRC', 'RJF', 'REG', 'SCG', 'SPG', 'FTI',
+ 'TMO', 'UDR', 'UAL', 'UNH', 'UPS', 'VZ', 'VRTX', 'VNO', 'WYNN',
+ 'XRX', 'XLNX'])
+ list(['AOS', 'AFL', 'APD', 'ALLE', 'ALL', 'AEE', 'AEP', 'AXP', 'AIG',
+ 'ABC', 'AME', 'ADI', 'ANDV', 'AAPL', 'ADM', 'ARNC', 'ADSK', 'ADP',
+ 'AVY', 'BAC', 'BAX', 'BBT', 'BDX', 'BRK.B', 'BLK', 'HRB', 'BA',
+ 'BSX', 'CAT', 'CBRE', 'CNC', 'SCHW', 'CHTR', 'CVX', 'CB', 'CINF',
+ 'C', 'CFG', 'CME', 'KO', 'CTSH', 'CL', 'CMA', 'CAG', 'COP', 'STZ',
+ 'GPN', 'GS', 'HAL', 'HIG', 'HAS', 'HSIC', 'HES', 'HPE', 'HLT', 'HON',
+ 'HRL', 'HBAN', 'INFO', 'ITW', 'IR', 'INTC', 'ICE', 'IBM', 'PG',
+ 'PGR', 'PRU', 'PVH', 'PWR', 'DGX', 'RTN', 'RF', 'RSG', 'RHI', 'ROK',
+ 'COL', 'ROP', 'SPGI', 'SHW', 'SWK', 'SBUX', 'STT', 'SRCL', 'STI',
+ 'SIVB', 'SYY', 'TEL', 'TXT', 'BK', 'HSY', 'TRV', 'TIF', 'TMK',
+ 'FOXA', 'FOX', 'TSN', 'USB', 'UNP', 'UTX', 'UHS', 'UNM', 'VFC',
+ 'VLO', 'VAR', 'VRSK', 'V', 'VMC', 'WM', 'WEC', 'WFC', 'WU', 'WLTW',
+ 'WYN', 'XL', 'YUM', 'ZION'])
+ list(['ADS', 'APH', 'APC', 'AMAT', 'APTV', 'T', 'AZO', 'BHGE',
+ 'BIIB', 'BWA', 'BHF', 'BMY', 'BF.B', 'CHRW', 'CA', 'CAH', 'CERN',
+ 'XEC', 'CTAS', 'EOG', 'GT', 'HOG', 'HCA', 'HOLX', 'ILMN', 'IP',
+ 'PFG', 'RMD', 'ROST', 'RCL', 'SLB', 'STX', 'SWKS', 'LUV', 'SYK',
+ 'SYF', 'TROW', 'TXN', 'COO', 'DIS', 'TRIP', 'ULTA', 'URI', 'VRSN',
+ 'WBA', 'WRK', 'WHR'])
+ list(['MMM', 'ACN', 'ATVI', 'ADBE', 'AAP', 'AES', 'AMG', 'AKAM',
+ 'ALK', 'LNT', 'GOOGL', 'GOOG', 'MO', 'AMZN', 'AMT', 'AMGN', 'AON',
+ 'APA', 'AJG', 'BLL', 'AVGO', 'COG', 'CDNS', 'CCL', 'CHD', 'CSCO',
+ 'CTXS', 'CMS', 'ED', 'GILD', 'HRS', 'HCP', 'HD', 'HST', 'HPQ', 'HII',
+ 'PLD', 'PEG', 'QRVO', 'O', 'CRM', 'SBAC', 'SEE', 'SRE', 'SNA', 'SO',
+ 'SNPS', 'TTWO', 'TPR', 'CLX', 'TWX', 'TJX', 'TSS', 'TDG', 'VTR',
+ 'WMT', 'WAT', 'WELL', 'WY', 'WMB', 'XEL', 'XYL', 'ZBH', 'ZTS'])
+ list(['AMD', 'A', 'ARE', 'ALGN', 'AIZ', 'BXP', 'CTL', 'CF', 'CXO',
+ 'HBI', 'HUM', 'IDXX', 'PHM', 'QCOM', 'RHT', 'REGN', 'SLG', 'TGT',
+ 'MOS', 'TSCO', 'UAA', 'UA', 'VIAB', 'WDC'])]

@@ -388,7 +388,7 @@ def main(degree=4, cache_data=False, use_cached_data=False,
             total_freqs_data[c_ind, v_ind] = np.abs(fft_vec[c_ind])
 
     k_min = 10
-    k_max = 30
+    k_max = 50
     label_list = []
 
     k_list = []
@@ -442,9 +442,9 @@ def main(degree=4, cache_data=False, use_cached_data=False,
     data_list = np.array(data_list)
     cost_k_list = []
     k_min = 10
-    k_max = 10000
+    k_max = 300
     for k in range(k_min, k_max):
-        if k % 10 == 0:
+        if k % 50 == 0:
             print("on {0} of {1}".format(k, k_max))
         clusters, label, cost_list = k_means(data_list, k)
         cost = cost_list[-1]

@@ -23,8 +23,8 @@ def k_means(X, k, eps=1e-20, max_iter=5000, print_freq=100):
     cost_list = []
     t_start = time.time()
     # randomly generate k clusters
-    clusters = np.random.multivariate_normal((.5 + np.random.rand(n))
-        * X.mean(axis=0), 10 * X.std(axis=0) * np.eye(n), size=k)
+    clusters = np.random.multivariate_normal((np.random.rand(n))
+        * X.mean(axis=0), 2*X.std(axis=0) * np.eye(n), size=k)
     label = np.zeros((m, 1)).astype(int)
     iter_num = 0
     while iter_num < max_iter:
@@ -38,7 +38,7 @@ def k_means(X, k, eps=1e-20, max_iter=5000, print_freq=100):
             # norm_list = [(np.linalg.norm(X[i, :] - centroid))**2 for
             #              centroid in clusters]
             # norm_array = np.array(norm_list)
-            # sorted_norms = np.argsort(norm_array)
+            # sorted_norms = np.argsort(norm_arra)ym
             # label[i] = sorted_norms.item(0)
 
         for i in range(k):
