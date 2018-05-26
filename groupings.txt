@@ -36,66 +36,6 @@
  'MOS', 'TSCO', 'UAA', 'UA', 'VIAB', 'WDC'])]
 
 
-5:
-        2 household product manufacterer
-        1 glass / can manufacturers
-
-        1 home improvement retailer
-        1 department store
-        1 walmart
-
-        1 bubble wrap / vacuum packing
-
-        1 adhesive / etc. manufacturer
-
-        1 management consulting service
-        1 investment management company
-        1 investment consulting + risk assessment
-        1 risk management consutling
-
-        2 video game company
-        1 productivity software (adobe)
-        1 google
-        1 amazon
-        1 HP (hewlett-packard)
-        2 content delivery / cloud computing
-        6 broadcast / network infrastructure
-        2 integrated circuits / pcb manufacturer
-
-        1 credit card processer
-
-        1 radio / transmitter manufacturers
-        1 defense contractor (specializes in radio things)
-        1 military aerospace provider
-
-        1 heavy duty marine, aviation, automotive part manufacturer
-        1 shipbuilding
-        1 cruise line stock
-
-        1 auto parts manufacturer
-
-        3 natural gas / oil
-        8 energy companies (power utility providers)
-        1 water utility
-
-        2 biopharmaceutical
-
-        1 airline
-
-        1 tobacco
-
-        1 fashion
-
-        1 timberlands real estate
-        1 senior care real estate investor
-        2 healthcare real estate
-        1 hotel real estate
-        1 real estate & supply chain
-        1 shopping center real estate
-
-        1 lab instrument manufacturer
-        1 medical device manufacturer
-        1 vaccination provider (for pets + livestock)
 
 1: Symantec (software company)
 
@@ -197,6 +137,66 @@
         1 entertainment / media
 
 
+5:
+        2 household product manufacterer
+        1 glass / can manufacturers
+
+        1 home improvement retailer
+        1 department store
+        1 walmart
+
+        1 bubble wrap / vacuum packing
+
+        1 adhesive / etc. manufacturer
+
+        1 management consulting service
+        1 investment management company
+        1 investment consulting + risk assessment
+        1 risk management consutling
+
+        2 video game company
+        1 productivity software (adobe)
+        1 google
+        1 amazon
+        1 HP (hewlett-packard)
+        2 content delivery / cloud computing
+        6 broadcast / network infrastructure
+        2 integrated circuits / pcb manufacturer
+
+        1 credit card processer
+
+        1 radio / transmitter manufacturers
+        1 defense contractor (specializes in radio things)
+        1 military aerospace provider
+
+        1 heavy duty marine, aviation, automotive part manufacturer
+        1 shipbuilding
+        1 cruise line stock
+
+        1 auto parts manufacturer
+
+        3 natural gas / oil
+        8 energy companies (power utility providers)
+        1 water utility
+
+        2 biopharmaceutical
+
+        1 airline
+
+        1 tobacco
+
+        1 fashion
+
+        1 timberlands real estate
+        1 senior care real estate investor
+        2 healthcare real estate
+        1 hotel real estate
+        1 real estate & supply chain
+        1 shopping center real estate
+
+        1 lab instrument manufacturer
+        1 medical device manufacturer
+        1 vaccination provider (for pets + livestock)
 
 
 6:
