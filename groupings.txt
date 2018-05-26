@@ -1,0 +1,229 @@
+[list(['SYMC'])
+ list(['ABT', 'ABBV', 'AYI', 'AET', 'ALB', 'ALXN', 'AGN', 'AAL',
+ 'AWK', 'AMP', 'ANSS', 'ANTM', 'AIV', 'AVB', 'BBY', 'BKNG', 'CPB',
+ 'COF', 'KMX', 'CBOE', 'CBS', 'CELG', 'CNP', 'CMG', 'CI', 'CMCSA',
+ 'GWW', 'HP', 'INCY', 'PSA', 'RRC', 'RJF', 'REG', 'SCG', 'SPG', 'FTI',
+ 'TMO', 'UDR', 'UAL', 'UNH', 'UPS', 'VZ', 'VRTX', 'VNO', 'WYNN',
+ 'XRX', 'XLNX'])
+ list(['AOS', 'AFL', 'APD', 'ALLE', 'ALL', 'AEE', 'AEP', 'AXP', 'AIG',
+ 'ABC', 'AME', 'ADI', 'ANDV', 'AAPL', 'ADM', 'ARNC', 'ADSK', 'ADP',
+ 'AVY', 'BAC', 'BAX', 'BBT', 'BDX', 'BRK.B', 'BLK', 'HRB', 'BA',
+ 'BSX', 'CAT', 'CBRE', 'CNC', 'SCHW', 'CHTR', 'CVX', 'CB', 'CINF',
+ 'C', 'CFG', 'CME', 'KO', 'CTSH', 'CL', 'CMA', 'CAG', 'COP', 'STZ',
+ 'GPN', 'GS', 'HAL', 'HIG', 'HAS', 'HSIC', 'HES', 'HPE', 'HLT', 'HON',
+ 'HRL', 'HBAN', 'INFO', 'ITW', 'IR', 'INTC', 'ICE', 'IBM', 'PG',
+ 'PGR', 'PRU', 'PVH', 'PWR', 'DGX', 'RTN', 'RF', 'RSG', 'RHI', 'ROK',
+ 'COL', 'ROP', 'SPGI', 'SHW', 'SWK', 'SBUX', 'STT', 'SRCL', 'STI',
+ 'SIVB', 'SYY', 'TEL', 'TXT', 'BK', 'HSY', 'TRV', 'TIF', 'TMK',
+ 'FOXA', 'FOX', 'TSN', 'USB', 'UNP', 'UTX', 'UHS', 'UNM', 'VFC',
+ 'VLO', 'VAR', 'VRSK', 'V', 'VMC', 'WM', 'WEC', 'WFC', 'WU', 'WLTW',
+ 'WYN', 'XL', 'YUM', 'ZION'])
+ list(['ADS', 'APH', 'APC', 'AMAT', 'APTV', 'T', 'AZO', 'BHGE',
+ 'BIIB', 'BWA', 'BHF', 'BMY', 'BF.B', 'CHRW', 'CA', 'CAH', 'CERN',
+ 'XEC', 'CTAS', 'EOG', 'GT', 'HOG', 'HCA', 'HOLX', 'ILMN', 'IP',
+ 'PFG', 'RMD', 'ROST', 'RCL', 'SLB', 'STX', 'SWKS', 'LUV', 'SYK',
+ 'SYF', 'TROW', 'TXN', 'COO', 'DIS', 'TRIP', 'ULTA', 'URI', 'VRSN',
+ 'WBA', 'WRK', 'WHR'])
+ list(['MMM', 'ACN', 'ATVI', 'ADBE', 'AAP', 'AES', 'AMG', 'AKAM',
+ 'ALK', 'LNT', 'GOOGL', 'GOOG', 'MO', 'AMZN', 'AMT', 'AMGN', 'AON',
+ 'APA', 'AJG', 'BLL', 'AVGO', 'COG', 'CDNS', 'CCL', 'CHD', 'CSCO',
+ 'CTXS', 'CMS', 'ED', 'GILD', 'HRS', 'HCP', 'HD', 'HST', 'HPQ', 'HII',
+ 'PLD', 'PEG', 'QRVO', 'O', 'CRM', 'SBAC', 'SEE', 'SRE', 'SNA', 'SO',
+ 'SNPS', 'TTWO', 'TPR', 'CLX', 'TWX', 'TJX', 'TSS', 'TDG', 'VTR',
+ 'WMT', 'WAT', 'WELL', 'WY', 'WMB', 'XEL', 'XYL', 'ZBH', 'ZTS'])
+ list(['AMD', 'A', 'ARE', 'ALGN', 'AIZ', 'BXP', 'CTL', 'CF', 'CXO',
+ 'HBI', 'HUM', 'IDXX', 'PHM', 'QCOM', 'RHT', 'REGN', 'SLG', 'TGT',
+ 'MOS', 'TSCO', 'UAA', 'UA', 'VIAB', 'WDC'])]
+
+
+5:
+        2 household product manufacterer
+        1 glass / can manufacturers
+
+        1 home improvement retailer
+        1 department store
+        1 walmart
+
+        1 bubble wrap / vacuum packing
+
+        1 adhesive / etc. manufacturer
+
+        1 management consulting service
+        1 investment management company
+        1 investment consulting + risk assessment
+        1 risk management consutling
+
+        2 video game company
+        1 productivity software (adobe)
+        1 google
+        1 amazon
+        1 HP (hewlett-packard)
+        2 content delivery / cloud computing
+        6 broadcast / network infrastructure
+        2 integrated circuits / pcb manufacturer
+
+        1 credit card processer
+
+        1 radio / transmitter manufacturers
+        1 defense contractor (specializes in radio things)
+        1 military aerospace provider
+
+        1 heavy duty marine, aviation, automotive part manufacturer
+        1 shipbuilding
+        1 cruise line stock
+
+        1 auto parts manufacturer
+
+        3 natural gas / oil
+        8 energy companies (power utility providers)
+        1 water utility
+
+        2 biopharmaceutical
+
+        1 airline
+
+        1 tobacco
+
+        1 fashion
+
+        1 timberlands real estate
+        1 senior care real estate investor
+        2 healthcare real estate
+        1 hotel real estate
+        1 real estate & supply chain
+        1 shopping center real estate
+
+        1 lab instrument manufacturer
+        1 medical device manufacturer
+        1 vaccination provider (for pets + livestock)
+
+1: Symantec (software company)
+
+
+2:
+        7 pharma / biotech research
+        3 healthcare
+        1 health insurance
+        1 chemical
+        1 scientific research
+
+        2 construction / lighting / motor supplies
+        1 automobile
+
+        1 natural gas / petroleum
+        1 energy holdings
+        1 energy company engineering / analysis firm
+
+        3 airline
+        1 travel booking company
+        1 travel software
+
+        1 shipping stock
+
+        3 public utility
+        4 financial
+
+        2 real estate investment
+        1 electronics dealer
+
+        2 food company
+        1 grocery real estate
+        1 mall real estate
+        1 office building / street retail real estate
+
+        1 casino
+
+        1 media
+
+        1 telecom
+
+        1 storage company
+
+        1 xerox
+
+        1 semiconductor
+
+4.
+        5 oil / petroleum
+        1 energy engineering company
+
+        2 automotive parts manufacturer
+        1 tire / rubber
+        1 motercycle
+
+        1 travel booking
+
+        1 freight transportation
+        1 cruise company
+        1 airline
+        1 heavy machinery rental service
+
+        2 semiconductor manufacturer
+        1 electronic manufacturer
+        1 applied materials
+        1 computer systems
+        1 network infrastucture
+        1 data storage
+        1 data analytics
+
+        1 appliance manufacturer
+
+        1 office / business supplier
+        1 clothes supplier
+        1 cosmetics
+
+        1 life insurance
+
+        1 biotech
+        1 pharma
+        3 health care
+
+        1 computer systems / hardware (for healthcare)
+        1 computer systems for biotech analysis
+        2 medical machine manufacturer
+        1 implant / joint replacement manufacturer
+
+        1 medical cannabis
+
+        2 paper
+
+        1 telecom
+
+        1 spirits and wine
+
+        2 financial
+        1 mutual fund
+
+        1 entertainment / media
+
+
+
+
+6:
+        1 consumer electronics manufacturer (gpus)
+        2 telecom
+        1 software company
+        1 hard drive company
+
+        1 health insurance
+
+        1 biotech
+
+        1 petroleum / natural gas
+
+        1 lab instrument manufacturer
+        1 dentistry machinery manufacturer
+
+        3 east-coast real estate trust companies
+        1 risk management company
+
+        2 fertilizer stocks
+        1 animal / livestock product / service company
+        1 tractor supply (+ agricultural / livestock services / home improvement)
+        1 home construction comapny
+
+        2 clothes company
+
+        1 consumer retailer
+
+        1 media company
