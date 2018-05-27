@@ -565,7 +565,17 @@ further.
 
 Anyways, for each, stock, we applied \texttt{np.abs()} to the fourier
 matrix, so that we wouldn't have to rewrite \texttt{k\_means} to deal
-with complex vectors.
+with complex vectors. This is something we'd like to improve in the
+future. Then, we applied \texttt{k\_means} clustering along each of
+the rows. That is, for each stock, we did \texttt{k\_means} clustering
+for the frequency vectors for each of the coefficients. Then, we
+applied a sort of ``meta'' \texttt{k\_means} that treated each of the
+output clusters from the previous step as an orthonormal basis. Again,
+this is a crude algorithm (we really should be preserving more
+information about the distances between clusters, instead of treating
+them as equidistant), but we were under some heavy time constraints.
+Finally, we applied \texttt{k\_means} to this, and after tuning some
+hyperparameters, we were shocked to obtain moderately decent results.
 
 
 \subsection{Data}
