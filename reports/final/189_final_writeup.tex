@@ -32,7 +32,6 @@
 \usepackage{tikz}
 \usepackage{float}
 \usetikzlibrary{shapes, arrows}
-
 \title{Predicting Stock Trends with Fourier Analysis}
 
 % The \author macro works with any number of authors. There are two
@@ -378,7 +377,7 @@ advancments on.
 \section{Methods}
 
 \subsection{Data Scraping}
-We gathered intraday data for ten randomly-selected S\&P 500 stocks
+We gathered intraday data for three randomly-selected S\&P 500 stocks
 using the Alpha Vantage API
 (\url{https://github.com/RomelTorres/alpha_vantage}). A portion of the
 data for one stock is shown below.
@@ -524,6 +523,50 @@ terms, then another transform on all the linear terms, etc. We decided
 to perform the Fourier transform on the coefficients instead of the
 actual stock prices because we wanted to see if this abstraction would
 yield any improvements in classification.
+
+\subsection{K-means}
+In this section, we'll give an overview of the techniques that we
+applied to get results for the final presentation, then move into the
+optimizations and corrections that we applied in the following days.
+
+We decided to apply a K-means algorithm to our fourier coefficients,
+to try and get some clustering behavior. Because each stock was fitted
+with a quintic polynomial, our fourier data for each stock looked
+something like
+\begin{align*}
+  \mathcal{F}(\texttt{GOOGL})
+  &=
+    \begin{bmatrix}
+      a_{0,0} & a_{0,1} & \cdots & a_{0,n} \\
+      a_{1,0} & a_{1,1} & \cdots & a_{1,n} \\
+      \vdots & \vdots & \ddots & \vdots \\
+      a_{6,0} & a_{6,1} & \cdots & a_{6,n}
+    \end{bmatrix}
+\end{align*}
+where $a_{i,j}$ is the complex amplitude for the $j^{\text{th}}$
+frequency in the discrete fourier transform of the coefficient for the
+term of degree $i$. Here, $n$ represents the number of total
+frequencies in our DFT, as documented in \texttt{np.fft.fftfreq}.
+
+Since we were analyzing a total of 299 stocks, we really have a large,
+$299 \times 6 \times n$ array of transformed data. Since our
+\texttt{k\_means} function we wrote for homework takes data matrices
+as input, we initially thought that we could just flatten each of the
+$6 \times n $ fourier sub-arrays, and feed them into the
+\texttt{k\_means} classifier. However, when we attempted to do so, we
+saw significant performance dropoffs in the initialization of the
+clusters. This was confusing, since we were able to initialize
+clusters for individual coefficients' fourier vectors quite rapidly,
+and the flattened versions were of the same order of magnitude (only 6
+times larger). We suspect that either \texttt{np.ndarray.std()} or
+\texttt{np.random.multivariate\_normal()} simply doesn't scale well if
+one of the axes gets particularly elongated, but we'll look into it
+further.
+
+Anyways, for each, stock, we applied \texttt{np.abs()} to the fourier
+matrix, so that we wouldn't have to rewrite \texttt{k\_means} to deal
+with complex vectors.
+
 
 \subsection{Data}
 
