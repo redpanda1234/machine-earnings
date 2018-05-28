@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+import itertools
 import numpy as np
 import pickle
 import sys
@@ -185,7 +186,7 @@ def binify(x):
     else:
         return -3
 
-def slope_estimate(data):
+def slope_estimate(data, plot=False):
     """
     data should be pre-windowed
     """
@@ -256,23 +257,92 @@ def slope_estimate(data):
 
         # Determine whether we have 5 plots.
         counter = (counter + 1) % num_subplots
-        if counter == 0:
+        if counter == 0 and plot:
             # If we have num_subplots plots, plot it and make a new plot for
             # new data.
             plt.show()
             f, axarr = plt.subplots(2, num_subplots)
             more_to_show = False
 
-    if more_to_show:
+    if more_to_show and plot:
         plt.show()
 
     return slope_data
 
+def threes(iterator):
+    """
+    Given an iterable object, iterate through it in a window of three items.
+    """
+    a, b, c = itertools.tee(iterator, 3)
+    next(b, None)
+    next(c, None)
+    next(c, None)
+    return zip(a, b, c)
+
 def generate_markov(slope_data):
     """
-    given slope data, returns a markov model used to predict future stock trends
+    Given slope data, returns a markov model used to predict future stock
+    trends.  Each element of slope_data is a tuple of the form (slopes,
+    binned_slopes, sym).
     """
-    return
+
+    # Initialize the Markov dictionary.
+    markov = {}
+
+    for slopes, binned_slopes, sym in slope_data:
+        # Iterate through slopes in windows of three items, i.e.
+        # (x[0], x[1], x[2]), (x[1], x[2], x[3]), etc.
+        for i, j, k in threes(binned_slopes):
+            # Use the previous two slopes as the key and the next slope as the
+            # value.
+            try:
+                markov[(i, j)].append(k)
+            except KeyError:
+                markov[(i, j)] = [k]
+
+    return markov
+
+def predict(markov, key):
+    """
+    returns a distribution of observed slopes based on recent data
+    """
+    dist = []
+    try: # Needed in case we haven't seen this slope sequence before.
+        for i in range(-3, 4):
+            dist.append(markov[key].count(i))
+    except KeyError:
+        print("No data available for this series of slopes: " + str(key))
+
+    # This array is of the form [c[-3], c[-2], ..., c[3]] where c[i] is the
+    # number of times the slope i appeared in the Markov model.
+    return dist
+
+def suggest(dist):
+    """
+    returns a vector of probability distributions for whether the user should
+    sell, do nothing, or buy
+    """
+    # Collapse the slope counts into probabilities of decisions by this scheme:
+    # -3    ->  sell
+    # -2    ->  sell
+    # -1    ->  do nothing
+    #  0    ->  do nothing
+    #  1    ->  do nothing
+    #  2    ->  buy
+    #  3    ->  buy
+
+    # Handle the case where no data was collected.
+    if dist == []:
+        print("Could not provide suggestions without data...")
+        return [0] * 3
+
+    counts = sum(dist)
+
+    sell = (dist[0] + dist[1]) / counts
+    do_nothing = (dist[2] + dist[3] + dist[4]) / counts
+    buy = (dist[5] + dist[6]) / counts
+
+    return [sell, do_nothing, buy]
 
 def poly_fit(data, window_size, degree=5, plot=False):
     """
@@ -370,12 +440,18 @@ def poly_fit(data, window_size, degree=5, plot=False):
     # print(total_fft_data)
     return np.array(total_fft_data), z_list
 
-def test(run=False):
+def get_data():
     fetched_data = get_fetched_data(use_cached_data=True)
     data, window_size = scraper.slice_windows(fetched_data)
-    if run:
-        slope_estimate(data)
     return data, window_size
+
+def give_probs(key):
+    data, window_size = get_data()
+    slope_data = slope_estimate(data)
+    markov = generate_markov(slope_data)
+    dist = predict(markov, key)
+    vec = suggest(dist)
+    return vec
 
 def main(degree=4, cache_data=False, use_cached_data=False,
          use_all_data=True, plot=True, windowed=True):
