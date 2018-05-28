@@ -81,7 +81,7 @@ has a rough idea of where we'll be going:
   \item Background and Motivation (challenges to modelling stock data)
   \item Long-term goal for the model / ideal model architecture
   \item Classification and Prediction
-  \item Findings
+  \item Results
   \item Conclusion
 \end{enumerate}
 
@@ -151,8 +151,8 @@ to predict the upcoming trends and return a vector of decisions. An
 example of the output is shown below.
 
 \[
-  \mathbf{y} = \Bigl<P_{buy}(\mathbf{x}), P_{sell}(\mathbf{x}),
-  P_{short}(\mathbf{x}), P_{nothing}(\mathbf{x})\Bigr>
+  \mathbf{y} = \Bigl<P_{sell}(\mathbf{x}), P_{nothing}(\mathbf{x}),
+  P_{buy}(\mathbf{x})\Bigr>
 \]
 
 Here, $P_{buy}(\mathbf{x})$ represents how confident the model is in
@@ -409,14 +409,28 @@ preforming at that moment in time. However, when composing a more
 polished model in the future, we will be sure to include this
 information.
 
-\subsection{Polynomial Fitting on Windowed Data}
+\subsection{Data Windowing}
 
-We then analyzed the data by running a sliding window of 20 minutes
-across the prices, with each window having a large overlap with the
-previous (to make the data smoother). Each consecutive window was only
-shifted by 2 minutes. We then fit a cubic polynomial to each window,
-extracting the constant, linear, and quadratic coefficients for
-further analysis.
+We then analyzed the data by running a sliding window of 20 data points (20
+minutes) across the prices, with each window having a large overlap with the
+previous (to make the data smoother). Specifically, each consecutive window was
+only shifted by 2 minutes. This windowed data was analyzed in two different ways.
+
+The windows were fitted with polynomials and the coefficients were then
+extracted for Fourier analysis. The frequency and amplitude information gained
+from the Fourier analysis was then used for classification via a k-means
+clustering algorithm.
+
+Linear regression was also performed on the windows and the slopes were
+extracted for analysis using a Markov model. Recent slope data was used to
+predict upcoming slopes in the hopes of predicting upcoming stock trends.
+
+\subsection{Clustering with Fourier Coefficients}
+
+\subsubsection{Polynomial Fitting on Windowed Data}
+
+With the windowed data, we fit a quintic polynomial to each window. Three such
+polynomials fitted to three consecutive windows are shown below.
 
 \begin{figure}[H]
   \centering
@@ -436,7 +450,9 @@ further analysis.
   \label{fig:sliding}
 \end{figure}
 
-\subsection{Visualizing the Coefficients}
+% TODO: justify a quintic
+
+\subsubsection{Visualizing the Coefficients}
 
 After performing this sliding window analysis on each of the stocks,
 we then plotted the coefficients of our polynomial fits in
@@ -455,7 +471,7 @@ Some examples are shown below.
     \includegraphics[width=\linewidth]{img/coeff2}
   \end{subfigure}
   \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$}
-  \label{fig:coeff}
+  \label{fig:coeff12}
 \end{figure}
 
 The distribution of the coefficients in three dimensional space seems
@@ -477,7 +493,7 @@ below.
   \includegraphics[width=\linewidth]{img/coeff3}
   \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
   without overlapping windows}
-  \label{fig:coeff}
+  \label{fig:coeff3}
 \end{figure}
 
 Although it is hard to see on the diagrams above, we noticed that the
@@ -496,9 +512,9 @@ variables: the roots. Hence, our solutions might be constrained to
 some hyperplane. Second, it could be that regularization is
 constraining the coefficients to the plane, preventing any one term
 from getting too large. So, satisfied with this answer for the time
-being, we moved on to fourier analysis.
+being, we moved on to Fourier analysis.
 
-\subsection{Fourier Analysis}
+\subsubsection{Discrete Fourier Transform}
 
 We would like to be able to compare stocks and be able to say how
 similar two stocks are based on trends. To do this, we need some
@@ -532,7 +548,33 @@ to perform the Fourier transform on the coefficients instead of the
 actual stock prices because we wanted to see if this abstraction would
 yield any improvements in classification.
 
-\subsection{K-means}
+% TODO: fix the captions
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/fourier1}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:fourier1}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/fourier2}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:fourier2}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/fourier3}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:fourier3}
+\end{figure}
+
+\subsubsection{K-means Clustering}
 
 In this section, we'll give an overview of the techniques that we
 applied to get results for the final presentation, then move into the
@@ -586,31 +628,13 @@ them as equidistant), but we were under some heavy time constraints.
 Finally, we applied \texttt{k\_means} to this, and after tuning some
 hyperparameters, we were shocked to obtain moderately decent results.
 
-\subsection{Data}
+\subsection{Markov Chain Prediction}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{img/fourier1}
-  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
-  without overlapping windows}
-  \label{fig:coeff}
-\end{figure}
+\subsubsection{Linear Regression}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{img/fourier2}
-  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
-  without overlapping windows}
-  \label{fig:coeff}
-\end{figure}
+\subsubsection{Markov Model}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{img/fourier3}
-  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
-  without overlapping windows}
-  \label{fig:coeff}
-\end{figure}
+\section{Results}
 
 \section{Conclusion}
 
@@ -622,5 +646,7 @@ frequency data, apply a windowing function to compensate for leakage
 extract low-frequency information, which should correspond to larger
 trends. And if we really manage to get results efficiently, we might
 try feeding them into an LSTM. Stay tuned for the final project!
+
+% TODO: describe how we can predict further into the future with the Markov model
 
 \end{document}
