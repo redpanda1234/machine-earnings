@@ -370,6 +370,7 @@ def main(degree=4, cache_data=False, use_cached_data=False,
          use_all_data=True, plot=True, windowed=True):
     """
     """
+    total_start = time.time()
     fetched_data = get_fetched_data(
         cache_data=cache_data,
         use_cached_data=use_cached_data,
@@ -387,8 +388,8 @@ def main(degree=4, cache_data=False, use_cached_data=False,
         for c_ind, coeff_vec in enumerate(fft_vec):
             total_freqs_data[c_ind, v_ind] = np.abs(fft_vec[c_ind])
 
-    k_min = 10
-    k_max = 50
+    k_min = 1000
+    k_max = 1050
     label_list = []
 
     k_list = []
@@ -441,8 +442,8 @@ def main(degree=4, cache_data=False, use_cached_data=False,
 
     data_list = np.array(data_list)
     cost_k_list = []
-    k_min = 10
-    k_max = 300
+    k_min = 1000
+    k_max = 1050
     for k in range(k_min, k_max):
         if k % 50 == 0:
             print("on {0} of {1}".format(k, k_max))
@@ -475,6 +476,7 @@ def main(degree=4, cache_data=False, use_cached_data=False,
     print(total)
     label_symbols = np.array(label_symbols)
     print(label_symbols)
+    print("================================\n Total elapsed time: {}".format(time.time() - total_start))
     return label_symbols
 
 # if __name__ == "__main__":

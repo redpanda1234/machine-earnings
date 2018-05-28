@@ -22,6 +22,7 @@
 \usepackage{microtype}      % microtypography
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{booktabs}
 \DeclareMathOperator*{\Motimes}{\text{\raisebox{0.25ex}{\scalebox{0.8}{$\bigotimes$}}}}
 
 % \usepackage{lmodern}
@@ -524,6 +525,33 @@ to perform the Fourier transform on the coefficients instead of the
 actual stock prices because we wanted to see if this abstraction would
 yield any improvements in classification.
 
+\subsection{Data}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.55\linewidth]{img/fourier1}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:coeff}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.55\linewidth]{img/fourier2}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:coeff}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.55\linewidth]{img/fourier3}
+  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
+  without overlapping windows}
+  \label{fig:coeff}
+\end{figure}
+
+
 \subsection{K-means}
 In this section, we'll give an overview of the techniques that we
 applied to get results for the final presentation, then move into the
@@ -568,41 +596,266 @@ matrix, so that we wouldn't have to rewrite \texttt{k\_means} to deal
 with complex vectors. This is something we'd like to improve in the
 future. Then, we applied \texttt{k\_means} clustering along each of
 the rows. That is, for each stock, we did \texttt{k\_means} clustering
-for the frequency vectors for each of the coefficients. Then, we
-applied a sort of ``meta'' \texttt{k\_means} that treated each of the
-output clusters from the previous step as an orthonormal basis. Again,
-this is a crude algorithm (we really should be preserving more
-information about the distances between clusters, instead of treating
-them as equidistant), but we were under some heavy time constraints.
-Finally, we applied \texttt{k\_means} to this, and after tuning some
-hyperparameters, we were shocked to obtain moderately decent results.
+for the frequency vectors for each of the coefficients, iterating over
+40 different values of $k$ to find an optimal number of clusters.
+
+Then, for each stock, we applied a one-hot encoding to store
+information about which cluster each of its coefficients were from.
+After flattening this collection of one-hot vectors into a single
+vector, we once again applied \texttt{k\_means} (iterating through 500
+different values of $k$), and output the results.
+
+One might wonder why we chose to use $500$ different $k$-values, as
+we had only $299$ stocks. The reasoning was this: we knew our data lay
+in a low-dimensional hyperplane of the original space, but the starter
+code for \texttt{k\_means} initialized the clusters following a simple
+multivariate gaussian distribution. Hence, many of the the centroids
+would be far away from the data's hyperplane, and so for small $k$, we
+were seeing stocks classified in just one or two clusters. We figured
+that if we upped the number of clusters, we'd have a higher chance of
+some of the randomly-initialized centroids being closer to different
+regions of the data.
+
+Admittedly, this algorithm is quite crude, but as a minimum viable
+product, we weren't too concerned with performance issues, and are
+willing to revisit accuracy concerns in the future.
+
+\section{Results}
+\subsection{K-means}
+\subsubsection{Performance}
+Although quite unoptimized, our algorithm completed analysis of $\sim
+2,100,000$ data points in just $\sim 4$ minutes. The process of
+windowed fitting for all 299 stocks took roughly $40.6$ seconds, while
+the two iterations of \texttt{k\_means} took about $223.1$ seconds on
+my macbook (including the hyperparameter search for optimal $k$, which
+comprised the bulk of the computation time).
+
+This is very promising, as it indicates that our algorithm would
+perform fast enough to be used in real-time, given a decently-powerful
+server. First, note that we'd only need to apply fitting to one window
+at a time as new data is imported, which would take fractions of a
+second. Second, note that the DFT has excellent performance for the
+typical array lengths we're feeding it. Third, note that if we were
+applying this sort of algorithm in real-time, we wouldn't expect the
+optimal values of $k$ to change much between runs (especially if we
+find a cleverer way to initialize centroids). Hence, we'd only have to
+scan over a few values of $k$, a process that could be parallelized
+extremely easily. Thus, we'd be able to perform a full run of our
+algorithm in just a few seconds. Since the alphavantage API updates
+every minute, this is more than fast enough to process the incoming
+data.
+
+\subsubsection{Output clusters}
+Here is a partial list of some of the output clusters for one run of
+the data:
+
+\begin{table}[H]
+\centering
+\caption{Cluster 1}
+\label{c1}
+\begin{tabular}{@{}cl@{}}
+\toprule
+Count & Industry  \\ \midrule
+1 & Cybersecurity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Cluster 2}
+\label{c2}
+\begin{tabular}{@{}cl@{}}
+  \toprule
+  Count & Industry  \\ \midrule
+  7 & pharmaceutical + biotech research \\
+  3 & healthcare providers \\
+  1 & health insurance \\
+  1 & chemical supplier \\
+  1 & scientific research \\
+        & \\
+  2 & construction / motor supplies \\
+  1 & automobile company \\
+        & \\
+  1 & natural gas / petroleum \\
+  1 & energy holdings \\
+  1 & energy engineering / analysis firm \\
+        & \\
+  3 & airline \\
+  1 & travel booking company \\
+  1 & travel software company \\
+        & \\
+  1 & shipping company \\
+        & \\
+  3 & public utility providers \\
+        & \\
+  4 & financial firms \\
+  2 & real estate investment firms \\
+        & \\
+  2 & food companies \\
+  1 & grocery store real estate firm \\
+  1 & mall real estate firm \\
+  1 & office building / street real estate firm \\
+  1 & casino \\
+        & \\
+  1 & media / news company \\
+        & \\
+  1 & telecom company \\
+        & \\
+  1 & storage company \\
+  1 & xerox \\
+        & \\
+  1 & semiconductor manufacturer\\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Cluster 3}
+\label{c3}
+  \toprule
+  Count & Industry \\ \midrule
+  5 & oil / petroleum companies \\
+  1 & energy engineering firm \\
+    & \\
+  2 & automotive parts manufacturers \\
+  1 & tire / rubber manufacturer \\
+  1 & motorcycle company \\
+    & \\
+  1 & heavy machinery rental business \\
+  1 & freight transportation company \\
+  1 & cruise company \\
+  1 & airline \\
+  1 & travel booking company \\
+    & \\
+  2 & semiconductor manufacturers \\
+  1 & electronics manufacturer \\
+  1 & applied materials science firm \\
+  1 & low-level computer systems firm \\
+  1 & network infrastructure firm \\
+  1 & data storage company \\
+  1 & data analytics firm  \\
+    & \\
+  1 & home appliance manufacturer \\
+  & \\
+  1 & office / business supplier \\
+  1 & clothes supplier \\
+  1 & cosmetics company \\
+  & \\
+  1 & life insurance \\
+  & \\
+  1 & biotech firm \\
+  1 & pharmaceutical firm \\
+  3 & health care firms \\
+  & \\
+  1 & computer systems / hardware supplier for hospitals \\
+  1 & computer systems for biotech analysis \\
+  2 & medical device manufacturers \\
+  1 & implant / joint replacement manufacturers \\
+  & \\
+  1 & medical cannabis company \\
+  & \\
+  2 & paper companies \\
+  & \\
+  1 & telecom company \\
+  & \\
+  2 & financial firms \\
+  1 & mutual fund \\
+    & \\
+  1 & entertainment / media company \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+% 5:
+%         2 household product manufacturer
+%         1 glass / can manufacturers
+
+%         1 bubble wrap / vacuum packing
+%         1 adhesive / etc. manufacturer
+
+%         1 home improvement retailer
+%         1 department store
+%         1 walmart
+
+%         1 fashion
+
+%         1 management consulting service
+%         1 investment management company
+%         1 investment consulting + risk assessment
+%         1 risk management consutling
+
+%         2 video game company
+%         1 productivity software (adobe)
+
+%         1 google
+%         1 amazon
+%         1 HP (hewlett-packard)
+%         6 broadcast / network infrastructure
+%         2 content delivery / cloud computing
+%         2 integrated circuits / pcb manufacturer
+
+%         1 credit card processer
+
+%         1 radio / transmitter manufacturers
+%         1 defense contractor (specializes in radio things)
+%         1 military aerospace provider
+
+%         1 auto parts manufacturer
+%         1 heavy duty marine, aviation, automotive part manufacturer
+%         1 shipbuilding
+%         1 cruise line stock
+%         1 airline
+
+%         3 natural gas / oil
+%         8 energy companies (power utility providers)
+
+%         1 water utility
+
+%         2 biopharmaceutical
+%         1 lab instrument manufacturer
+%         1 medical device manufacturer
+%         1 vaccination provider (for pets + livestock)
+%         1 tobacco
+
+%         1 timberlands real estate
+%         1 senior care real estate investor
+%         2 healthcare real estate
+%         1 hotel real estate
+%         1 real estate \& supply chain
+%         1 shopping center real estate
 
 
-\subsection{Data}
+% 6:
+%         1 consumer electronics manufacturer (gpus)
+%         2 telecom
+%         1 software company
+%         1 hard drive company
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{img/fourier1}
-  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
-  without overlapping windows}
-  \label{fig:coeff}
-\end{figure}
+%         1 health insurance
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{img/fourier2}
-  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
-  without overlapping windows}
-  \label{fig:coeff}
-\end{figure}
+%         1 biotech
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{img/fourier3}
-  \caption{Visualization of the lower order coefficients in $\mathbb{R}^3$
-  without overlapping windows}
-  \label{fig:coeff}
-\end{figure}
+%         1 petroleum / natural gas
+
+%         1 lab instrument manufacturer
+%         1 dentistry machinery manufacturer
+
+%         3 east-coast real estate trust companies
+%         1 risk management company
+
+%         2 fertilizer stocks
+%         1 animal / livestock product / service company
+%         1 tractor supply (+ agricultural / livestock services / home improvement)
+%         1 home construction comapny
+
+%         2 clothes company
+
+%         1 consumer retailer
+
+%         1 media company
+
 
 \section{Conclusion}
 Unfortunately, we were not able to perform extensive analysis on this
