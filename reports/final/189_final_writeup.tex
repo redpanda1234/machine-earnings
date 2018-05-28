@@ -32,6 +32,7 @@
 \usepackage{tikz}
 \usepackage{float}
 \usetikzlibrary{shapes, arrows}
+
 \title{Predicting Stock Trends with Fourier Analysis}
 
 % The \author macro works with any number of authors. There are two
@@ -73,17 +74,19 @@
 \end{abstract}
 
 \section{Introduction}
+
 Here is a rough table of contents for our paper, so that the reader
 has a rough idea of where we'll be going:
 \begin{enumerate}
-  \item Motivation (challenges to modelling stock data)
+  \item Background and Motivation (challenges to modelling stock data)
   \item Long-term goal for the model / ideal model architecture
-  \item Classification
+  \item Classification and Prediction
   \item Findings
   \item Conclusion
 \end{enumerate}
 
-\section{Background}
+\section{Background and Motivation}
+
 There are many reasons why predicting stock prices is difficult, but
 for our model today, we will focus on just two:
 \begin{enumerate}
@@ -138,10 +141,10 @@ data so as to control for some of the effects of (1).
 % lot of information, is computationally less demanding and easier to
 % find data for performing analysis.
 
-
 \section{The Model}
 
 \subsection{Goals}
+
 Our ultimate goal is to be able to use past stock data to train our
 model. Then given some stock trend data for some stock, use our model
 to predict the upcoming trends and return a vector of decisions. An
@@ -195,7 +198,9 @@ our model to perform the following:
   \item Make a trading decision based on this information.
 \end{enumerate}
 We propose the following prototype model.
+
 \subsection{Prototype Architecture}
+
 Before we get into it, we want to stress that this is a heavily
 compartmentalized model we built to try and capture how we want
 information to flow and be processed. In reality, we'd want to
@@ -374,9 +379,11 @@ problem. Implementations and hyperparameters may differ, of course,
 but underneath, the structure of the model is largely the same. We saw
 the filtering process as the component we could perhaps make
 advancments on.
+
 \section{Methods}
 
 \subsection{Data Scraping}
+
 We gathered intraday data for three randomly-selected S\&P 500 stocks
 using the Alpha Vantage API
 (\url{https://github.com/RomelTorres/alpha_vantage}). A portion of the
@@ -430,6 +437,7 @@ further analysis.
 \end{figure}
 
 \subsection{Visualizing the Coefficients}
+
 After performing this sliding window analysis on each of the stocks,
 we then plotted the coefficients of our polynomial fits in
 $\mathbb{R}^3$ to visualize our data. We were hoping that we'd gain
@@ -525,6 +533,7 @@ actual stock prices because we wanted to see if this abstraction would
 yield any improvements in classification.
 
 \subsection{K-means}
+
 In this section, we'll give an overview of the techniques that we
 applied to get results for the final presentation, then move into the
 optimizations and corrections that we applied in the following days.
@@ -577,7 +586,6 @@ them as equidistant), but we were under some heavy time constraints.
 Finally, we applied \texttt{k\_means} to this, and after tuning some
 hyperparameters, we were shocked to obtain moderately decent results.
 
-
 \subsection{Data}
 
 \begin{figure}[H]
@@ -605,6 +613,7 @@ hyperparameters, we were shocked to obtain moderately decent results.
 \end{figure}
 
 \section{Conclusion}
+
 Unfortunately, we were not able to perform extensive analysis on this
 data before the deadline. However, the current results look promising.
 In the future, we want to try and apply clustering algorithms to the
