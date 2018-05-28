@@ -244,9 +244,9 @@ def slope_estimate(data):
 
         # Plot the slope data and the binned slope data.
         axarr[0, counter].plot(range(1, len(slopes) + 1), slopes, 'b.')
-        axarr[0, counter].set_title('Slopes of Windows')
+        axarr[0, counter].set_title('Slopes of Windows of ' + sym)
         axarr[1, counter].hist(slopes, [-3.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
-        axarr[1, counter].set_title('Binned Slopes of Windows')
+        axarr[1, counter].set_title('Binned Slopes of Windows of ' + sym)
         axarr[1, counter].set_xlim([-4,4])
 
         # Determines whether there are some plots we have not shown yet after
@@ -267,6 +267,12 @@ def slope_estimate(data):
         plt.show()
 
     return slope_data
+
+def generate_markov(slope_data):
+    """
+    given slope data, returns a markov model used to predict future stock trends
+    """
+    return
 
 def poly_fit(data, window_size, degree=5, plot=False):
     """
@@ -364,7 +370,12 @@ def poly_fit(data, window_size, degree=5, plot=False):
     # print(total_fft_data)
     return np.array(total_fft_data), z_list
 
-
+def test(run=False):
+    fetched_data = get_fetched_data(use_cached_data=True)
+    data, window_size = scraper.slice_windows(fetched_data)
+    if run:
+        slope_estimate(data)
+    return data, window_size
 
 def main(degree=4, cache_data=False, use_cached_data=False,
          use_all_data=True, plot=True, windowed=True):
