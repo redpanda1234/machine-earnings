@@ -646,9 +646,76 @@ willing to revisit accuracy concerns in the future.
 
 \subsection{Markov Chain Prediction}
 
-\subsubsection{Linear Regression}
+\subsubsection{Slope Estimation}
+
+For each sliding window, the difference in height between the last point and
+the first point was taken as an approximation for the slope of the trend of
+that window. We were interested in the slope because it is an indicator for
+whether the stock price is falling, stable, or rising.
+
+\subsubsection{Data Binning}
+
+We then decided to bin our data since the slopes were real numbers and binning
+the data was necessary to be able to use a Markov model. Otherwise, it would be
+extremely likely that our model would not have seen the slope data of the stock
+that we were predicting.
+
+We binned our slopes according to the following scheme.
+
+% TODO: fix spacing
+
+\begin{verbatim}
+7.5  < x         ->   3
+4.5  < x <  7.5  ->   2
+1.5  < x <  4.5  ->   1
+-1.5 < x <  1.5  ->   0
+-4.5 < x < -1.5  ->  -1
+-7.5 < x < -4.5  ->  -2
+       x < -7.5  ->  -3
+\end{verbatim}
+
+The following graphs show the results of the slope extraction and data binning
+for four of our stocks.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/slopes}
+  \caption{Graphs of slopes and binned slopes for four different stocks}
+  \label{fig:slopes}
+\end{figure}
 
 \subsubsection{Markov Model}
+
+We then fed all the slope data into a Markov model. Given any two consecutive
+binned slopes, our model would provide a list of all the succeeding binned
+slopes it had encountered in the training data immediately after seeing the two
+provided consecutive binned slopes.
+
+\subsubsection{Prediction}
+
+Given the binned slopes of the two most recent sliding windows for a stock, our
+Markov model would be able to provide a vector of suggested choices in the form
+
+\[
+  \mathbf{y} = \Bigl<P_{sell}(\mathbf{x}), P_{nothing}(\mathbf{x}),
+  P_{buy}(\mathbf{x})\Bigr>
+\]
+
+It does this by taking the list of upcoming slopes from the Markov model and
+collapsing them into counts by putting the binned slopes into three different
+bins according to the following scheme.
+
+\begin{verbatim}
+-3    ->  sell
+-2    ->  sell
+-1    ->  do nothing
+ 0    ->  do nothing
+ 1    ->  do nothing
+ 2    ->  buy
+ 3    ->  buy
+\end{verbatim}
+
+The counts are then normalized to make it a probability distribution.
 
 \section{Results}
 
