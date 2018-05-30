@@ -957,6 +957,12 @@ Count & Industry  \\ \midrule
 
 %         1 media company
 
+\subsection{Markov Analysis}
+
+Testing was performed on stocks from the S&P500, specifically, 503 stocks. We
+used 80\% of the stocks to train our Markov model and the remaining 20\% was
+used to test our model. We found a success rate of ???\%.
+
 \section{Conclusion}
 
 Unfortunately, we were not able to perform extensive analysis on this
@@ -968,7 +974,34 @@ extract low-frequency information, which should correspond to larger
 trends. And if we really manage to get results efficiently, we might
 try feeding them into an LSTM. Stay tuned for the final project!
 
-% TODO: describe how we can predict further into the future with the Markov
-% model
+\subsection{Future Directions}
+
+For the slope estimation, the current method is a crude estimate that was
+chosen for speed and simplicity. A more accurate measurement of the slope of
+the window is to perform a linear regression and extract the slope. However,
+this may make the program run slightly slower.
+
+In terms of the Markov model, many things could be done to improve it.
+Currently, we are only looking at two windows and predicting the next window.
+This means we can only predict the trend for the next minute given the previous
+two minutes. This is not very useful. We can make this better by simply having
+the Markov model remember more past information then predict more future
+information.
+
+Another thing that can be done is to use the actual slopes instead of
+completely binning all the slopes. For example, the keys in the Markov
+dictionary can be binned slopes but we store actual slope information in the
+value lists.
+
+Furthermore, windows can be labelled with stocks and be treated differently
+depending on which stock the window belongs to. Currently, have have clustering
+data so that can be incorporated into the Markov model.
+
+Also, in our calculation for the success rate of our Markov model, we defined a
+sucess to be if we predicted the correct bin the next slope would be in. This
+means that if a stock slope was actually belonging in the -2 bin, we would
+treat a prediction of -1 and 3 the same. However, this seems intuitively wrong
+since -1 is a much better prediction than 3. Thus, in the future we could have
+a better metric for deciding the performance of our model.
 
 \end{document}
