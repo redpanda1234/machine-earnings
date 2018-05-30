@@ -74,18 +74,6 @@
   data, particularly in the context of grouping correlated stocks.
 \end{abstract}
 
-\section{Introduction}
-
-Here is a rough table of contents for our paper, so that the reader
-has a rough idea of where we'll be going:
-\begin{enumerate}
-  \item Background and Motivation (challenges to modelling stock data)
-  \item Long-term goal for the model / ideal model architecture
-  \item Classification and Prediction
-  \item Results
-  \item Conclusion
-\end{enumerate}
-
 \section{Background and Motivation}
 
 There are many reasons why predicting stock prices is difficult, but
@@ -1009,8 +997,9 @@ interested in classifying industries as we are in identifying exactly
 how certain stocks are related to other ones. Thus we would like to
 have some sort of metric that allows us to speak directly about the
 ``connectedness'' of two distinct stocks. An obvious first choice
-would be the standard metric on $\mathbb{C}^n$.
-
+would be the standard metric on $\mathbb{C}^n$, but we'd be excited to
+examine ones that consider stocks that are ``overtones'' of one
+another to be close.
 
 
 \subsection{Markov Model}
