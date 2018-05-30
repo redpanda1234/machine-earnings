@@ -26,7 +26,7 @@
 \DeclareMathOperator*{\Motimes}{\text{\raisebox{0.25ex}{\scalebox{0.8}{$\bigotimes$}}}}
 
 % \usepackage{lmodern}
-
+\allowdisplaybreaks
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -747,8 +747,9 @@ data.
 
 \subsubsection{Output clusters}
 
-Here is a partial list of some of the output clusters for one run of
-the data:
+In this section, we analyize a partial list of some of the output
+clusters for one run of the data. First, we look at the only
+singleton:
 
 \begin{table}[H]
 \centering
@@ -761,6 +762,13 @@ Count & Industry  \\ \midrule
 \bottomrule
 \end{tabular}
 \end{table}
+
+This cluster corresponded to Symantec. In almost all of our runs, it
+remained in a cluster by itself. We were curious if there were
+anything immediately obvious that could explain this, so we googled
+the company, and found that Symantec is in fact currently experiencing
+an internal audit, which caused stock prices to take a massive drop
+last week.
 
 \begin{table}[H]
 \centering
@@ -810,7 +818,7 @@ Count & Industry  \\ \midrule
   \bottomrule
 \end{tabular}
 \end{table}
-
+In this cluster, we saw a lot of exciting groupings. First, there was
 \begin{table}[H]
 \centering
 \caption{Cluster 3}
@@ -869,6 +877,8 @@ Count & Industry  \\ \midrule
   \bottomrule
 \end{tabular}
 \end{table}
+
+
 
 % 5:
 %         2 household product manufacturer
@@ -960,14 +970,14 @@ Count & Industry  \\ \midrule
 
 \section{Conclusion}
 
-Unfortunately, we were not able to perform extensive analysis on this
-data before the deadline. However, the current results look promising.
-In the future, we want to try and apply clustering algorithms to the
-frequency data, apply a windowing function to compensate for leakage
-(notice the broad peaks), and maybe apply a low-pass filter to try and
-extract low-frequency information, which should correspond to larger
-trends. And if we really manage to get results efficiently, we might
-try feeding them into an LSTM. Stay tuned for the final project!
+% Unfortunately, we were not able to perform extensive analysis on this
+% data before the deadline. However, the current results look promising.
+% In the future, we want to try and apply clustering algorithms to the
+% frequency data, apply a windowing function to compensate for leakage
+% (notice the broad peaks), and maybe apply a low-pass filter to try and
+% extract low-frequency information, which should correspond to larger
+% trends. And if we really manage to get results efficiently, we might
+% try feeding them into an LSTM. Stay tuned for the final project!
 
 % TODO: describe how we can predict further into the future with the Markov
 % model
