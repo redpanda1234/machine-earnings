@@ -818,7 +818,15 @@ last week.
   \bottomrule
 \end{tabular}
 \end{table}
-In this cluster, we saw a lot of exciting groupings. First, there was
+In this cluster, we saw a lot of exciting groupings. First, note the
+concentration of companies tied to the healthcare industry --- we have
+7 pharmaceutical / biotech companies, and 3 healthcare provider
+stocks. Next, note that we also see a group of transportation /
+shipping and energy-related companies, as well as a grouping of
+grocery / retail related real estate firms, which was interesting.
+
+In the cluster on the next page, we see a lot of clustering of more
+industrial and manufacturing firms.
 \begin{table}[H]
 \centering
 \caption{Cluster 3}
@@ -970,11 +978,10 @@ In this cluster, we saw a lot of exciting groupings. First, there was
 
 \subsection{Markov Analysis}
 
-Testing was performed on stocks from the S&P500, specifically, 503 stocks. We
-used 80\% of the stocks to train our Markov model and the remaining 20\% was
-used to test our model. We found a success rate of ???\%.
-
-\section{Conclusion}
+Testing was performed on stocks from the S\&P500, specifically, 10
+stocks (runtime grew too long when using the whole dataset). We used
+80\% of the stocks to train our Markov model and the remaining 20\%
+was used to test our model. We found a success rate of 84.29\%.
 
 % Unfortunately, we were not able to perform extensive analysis on this
 % data before the deadline. However, the current results look promising.
@@ -985,34 +992,56 @@ used to test our model. We found a success rate of ???\%.
 % trends. And if we really manage to get results efficiently, we might
 % try feeding them into an LSTM. Stay tuned for the final project!
 
-\subsection{Future Directions}
+\section{Future Directions}
+\subsection{Fourier + K-means}
+In the future, we'd like to implement a version of the
+\texttt{k\_means} algorithm that does not require taking the magnitude
+of the fourier vectors. We would also like to improve the manner in
+which cluster centroids are initialized. We know that our data
+occupies some low-dimensional hyperplane of the total space, and we'd
+like to be able to make sure that we're only initializing cluster
+centroids within that hyperplane.
 
-For the slope estimation, the current method is a crude estimate that was
-chosen for speed and simplicity. A more accurate measurement of the slope of
-the window is to perform a linear regression and extract the slope. However,
-this may make the program run slightly slower.
+Additionally, we would like to have a method for interpreting the
+fourier data that does not require clustering. Clustering is a good
+first method for analyzing the data, but really, we aren't as
+interested in classifying industries as we are in identifying exactly
+how certain stocks are related to other ones. Thus we would like to
+have some sort of metric that allows us to speak directly about the
+``connectedness'' of two distinct stocks. An obvious first choice
+would be the standard metric on $\mathbb{C}^n$.
+
+
+
+\subsection{Markov Model}
+For the slope estimation, the current method is a crude estimate that
+was chosen for speed and simplicity. A more accurate measurement of
+the slope of the window is to perform a linear regression and extract
+the slope. However, this may make the program run slightly slower.
 
 In terms of the Markov model, many things could be done to improve it.
-Currently, we are only looking at two windows and predicting the next window.
-This means we can only predict the trend for the next minute given the previous
-two minutes. This is not very useful. We can make this better by simply having
-the Markov model remember more past information then predict more future
-information.
+Currently, we are only looking at two windows and predicting the next
+window. This means we can only predict the trend for the next minute
+given the previous two minutes. This is not very useful. We can make
+this better by simply having the Markov model remember more past
+information then predict more future information.
 
 Another thing that can be done is to use the actual slopes instead of
 completely binning all the slopes. For example, the keys in the Markov
-dictionary can be binned slopes but we store actual slope information in the
-value lists.
+dictionary can be binned slopes but we store actual slope information
+in the value lists.
 
-Furthermore, windows can be labelled with stocks and be treated differently
-depending on which stock the window belongs to. Currently, have have clustering
-data so that can be incorporated into the Markov model.
+Furthermore, windows can be labelled with stocks and be treated
+differently depending on which stock the window belongs to. Currently,
+have have clustering data so that can be incorporated into the Markov
+model.
 
-Also, in our calculation for the success rate of our Markov model, we defined a
-sucess to be if we predicted the correct bin the next slope would be in. This
-means that if a stock slope was actually belonging in the -2 bin, we would
-treat a prediction of -1 and 3 the same. However, this seems intuitively wrong
-since -1 is a much better prediction than 3. Thus, in the future we could have
-a better metric for deciding the performance of our model.
+Also, in our calculation for the success rate of our Markov model, we
+defined a sucess to be if we predicted the correct bin the next slope
+would be in. This means that if a stock slope was actually belonging
+in the -2 bin, we would treat a prediction of -1 and 3 the same.
+However, this seems intuitively wrong since -1 is a much better
+prediction than 3. Thus, in the future we could have a better metric
+for deciding the performance of our model.
 
 \end{document}
