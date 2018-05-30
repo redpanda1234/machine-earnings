@@ -453,6 +453,58 @@ def give_probs(key):
     vec = suggest(dist)
     return vec
 
+def calculate_sucess_rate():
+    # Load the cached data.
+    cached_data_filename = "data/cached_snp_data.p"
+    fetched_data = pickle.load(open(cached_data_filename, "rb"))
+
+    # Use the first 80% for training and other 20% for testing.
+    length = len(fetched_data)
+    cutoff = int(length * 0.8)
+
+    # Splice the data into training data and testing data.
+    training_data = fetched_data[:cutoff]
+    testing_data = fetched_data[cutoff:]
+
+    # Create a Markov model using the training data.
+    data, window_size = scraper.slice_windows(training_data)
+    slope_data = slope_estimate(data)
+    markov = generate_markov(slope_data)
+
+    # Test our Markov model against data.
+    data, window_size = scraper.slice_windows(testing_data)
+    slope_data = slope_estimate(data)
+
+    # Initialize counter. The first item is the number of successes, the second
+    # is failure, and the third is a lack of data to make a prediction.
+    counts = [0, 0, 0]
+
+    # Count success and failure rate.
+    for slopes, binned_slopes, sym in slope_data:
+        # Iterate through slopes in windows of three items, i.e.
+        # (x[0], x[1], x[2]), (x[1], x[2], x[3]), etc.
+        for i, j, k in threes(binned_slopes):
+            # Use the previous two slopes as the key and the next slope as the
+            # value.
+            try:
+                # Get the counts of all the predicted slopes.
+                tally = predict(markov, (i, j))
+                # Find the mode of the distribution.
+                mode = tally.index(max(tally))
+                # This converts from the index of the array to the bin the
+                # index represents.
+                mode -= 3
+
+                # Check whether the prediction was accurate.
+                if mode == k:
+                    counts[0] += 1
+                else:
+                    counts[1] += 1
+            except KeyError:
+                counts[2] += 1
+
+    return counts
+
 def main(degree=4, cache_data=False, use_cached_data=False,
          use_all_data=True, plot=True, windowed=True):
     """
